@@ -1,0 +1,13 @@
+﻿services:
+  - type: web
+    name: lumina-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: lumina-db
