@@ -14,6 +14,16 @@ A full-stack productivity app combining **notes with AI summarisation**, **habit
 
 ## Features
 
+## ✨ Lumina in Action
+### Dashboard
+![Dashboard](screenshots/Dashboard-Dark.png)
+
+### Habits Tracker
+![Habits](screenshots/habits.png)
+
+### Calendar & Events
+![Calendar](screenshots/calendar.png)
+
 ### 📝 Notes
 - Markdown editor with folder organisation
 - AI-powered summarisation (one click → 2-3 sentence summary)
