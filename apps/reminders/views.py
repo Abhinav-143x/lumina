@@ -31,7 +31,8 @@ class ReminderScheduleViewSet(viewsets.ModelViewSet):
         """Get upcoming reminders (not sent yet)"""
         now = timezone.now()
         upcoming_reminders = self.get_queryset().filter(
-            is_sent=False,
+            is_sent=False
+        ).filter(
             Q(custom_datetime__gt=now) | Q(custom_datetime__isnull=True)
         ).order_by('custom_datetime', 'created_at')
         serializer = self.get_serializer(upcoming_reminders, many=True)
