@@ -3,51 +3,185 @@ import { useNavigate, Link } from 'react-router-dom'
 import api from '../api/client'
 
 export default function Register() {
-  const nav = useNavigate()
-  const [data, setData] = useState({ username: '', email: '', password: '' })
-  const [err, setErr] = useState('')
+  const navigate = useNavigate()
+  const [data, setData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handle = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setErr(''); setLoading(true)
+    setError('')
+
+    // Validation
+    if (data.password !== data.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (data.password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+
+    setLoading(true)
+
     try {
-      const { data: r } = await api.post('/auth/register/', data)
-      localStorage.setItem('access', r.access)
-      localStorage.setItem('refresh', r.refresh)
-      localStorage.setItem('user', JSON.stringify(r.user))
-      nav('/')
-    } catch (e) {
-      const d = e.response?.data
-      setErr(typeof d === 'string' ? d : JSON.stringify(d) || 'Registration failed')
-    } finally { setLoading(false) }
+      await api.post('/auth/register/', {
+        username: data.username,
+        email: data.email,
+        password: data.password
+      })
+
+      // Auto login after registration
+      const { data: response } = await api.post('/auth/login/', {
+        username: data.username,
+        password: data.password
+      })
+
+      localStorage.setItem('access', response.access)
+      localStorage.setItem('refresh', response.refresh)
+
+      const me = await api.get('/auth/me/')
+      localStorage.setItem('user', JSON.stringify(me.data))
+
+      navigate('/')
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Registration failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const set = k => e => setData(d => ({ ...d, [k]: e.target.value }))
+  const handleChange = (field) => (e) => {
+    setData(prev => ({ ...prev, [field]: e.target.value }))
+  }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
-      <div className="card" style={{ width: 380 }}>
-        <div style={{ fontSize: 22, fontWeight: 600, marginBottom: 8, color: 'var(--accent)' }}>◈ Lumina</div>
-        <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 24 }}>Create your second brain</div>
-        {err && <div style={{ background: 'rgba(239,68,68,.1)', color: 'var(--red)', padding: '8px 12px', borderRadius: 8, marginBottom: 16, fontSize: 13 }}>{err}</div>}
-        <form onSubmit={handle} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[
-            { k: 'username', label: 'Username', type: 'text', ph: 'choose a username' },
-            { k: 'email', label: 'Email', type: 'email', ph: 'you@example.com' },
-            { k: 'password', label: 'Password', type: 'password', ph: 'min 6 characters' },
-          ].map(f => (
-            <div key={f.k}>
-              <label style={{ fontSize: 12, color: 'var(--muted)', display: 'block', marginBottom: 4 }}>{f.label}</label>
-              <input type={f.type} placeholder={f.ph} value={data[f.k]} onChange={set(f.k)} required />
+    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
+      <div className="w-full max-w-md">
+        {/* Logo and Header */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-secondary mb-4 shadow-glow">
+            <span className="text-3xl font-bold">L</span>
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Create your account</h1>
+          <p className="text-secondary">Start building your second brain</p>
+        </div>
+
+        {/* Register Form */}
+        <div className="card animate-slide-in">
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm">
+              {error}
             </div>
-          ))}
-          <button className="btn btn-primary" type="submit" disabled={loading} style={{ marginTop: 4 }}>
-            {loading ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
-        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: 'var(--muted)' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--accent)' }}>Sign in</Link>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                placeholder="Choose a username"
+                value={data.username}
+                onChange={handleChange('username')}
+                required
+                minLength={3}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={data.email}
+                onChange={handleChange('email')}
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={data.password}
+                onChange={handleChange('password')}
+                required
+                minLength={6}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-secondary mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={data.confirmPassword}
+                onChange={handleChange('confirmPassword')}
+                required
+                minLength={6}
+                className="w-full"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full btn-lg"
+            >
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Creating account...
+                </>
+              ) : (
+                'Create account'
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-secondary">
+            Already have an account?{' '}
+            <Link to="/login" className="text-accent hover:underline font-medium">
+              Sign in
+            </Link>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div className="p-3 rounded-lg bg-tertiary/30">
+            <div className="text-2xl mb-1">📝</div>
+            <div className="text-xs text-tertiary">Smart Notes</div>
+          </div>
+          <div className="p-3 rounded-lg bg-tertiary/30">
+            <div className="text-2xl mb-1">✅</div>
+            <div className="text-xs text-tertiary">Habit Tracking</div>
+          </div>
+          <div className="p-3 rounded-lg bg-tertiary/30">
+            <div className="text-2xl mb-1">🤖</div>
+            <div className="text-xs text-tertiary">AI Assistant</div>
+          </div>
         </div>
       </div>
     </div>
