@@ -8,6 +8,7 @@ import Habits from './pages/Habits'
 import HabitDetail from './pages/HabitDetail'
 import CalendarPage from './pages/CalendarPage'
 import AIChat from './pages/AIChat'
+import Reminders from './pages/Reminders'
 import Layout from './components/Layout'
 
 const isAuth = () => !!localStorage.getItem('access')
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="habits/:id" element={<HabitDetail />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="ai" element={<AIChat />} />
+        <Route path="reminders" element={<Reminders />} />
       </Route>
     </Routes>
   )
