@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "apps.habits",
     "apps.calendar_app",
     "apps.ai_assistant",
+    "apps.reminders",
 ]
 
 MIDDLEWARE = [
