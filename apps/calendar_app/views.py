@@ -14,7 +14,13 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
-        return super().create(validated_data)
+        event = super().create(validated_data)
+
+        # Trigger reminder creation asynchronously
+        from apps.reminders.celery_tasks import create_event_reminders
+        create_event_reminders.delay(str(event.id))
+
+        return event
 
 
 class EventListCreateView(generics.ListCreateAPIView):

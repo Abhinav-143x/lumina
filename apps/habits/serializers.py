@@ -35,4 +35,10 @@ class HabitSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
-        return super().create(validated_data)
+        habit = super().create(validated_data)
+
+        # Trigger reminder creation asynchronously
+        from apps.reminders.celery_tasks import create_habit_reminders
+        create_habit_reminders.delay(str(habit.id))
+
+        return habit
