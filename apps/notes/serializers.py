@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Note, Tag
+from .models import Note, Tag, NoteTemplate
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -54,3 +54,17 @@ class NoteListSerializer(serializers.ModelSerializer):
         model = Note
         fields = ("id", "title", "summary", "tags", "is_pinned", "folder",
                   "word_count", "created_at", "updated_at")
+
+
+class NoteTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NoteTemplate
+        fields = (
+            "id", "name", "description", "content", "category", "icon", "color",
+            "usage_count", "is_favorite", "is_system", "created_at", "updated_at"
+        )
+        read_only_fields = ("id", "usage_count", "created_at", "updated_at")
+
+    def create(self, validated_data):
+        validated_data["user"] = self.context["request"].user
+        return super().create(validated_data)

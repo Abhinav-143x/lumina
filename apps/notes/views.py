@@ -1,9 +1,10 @@
 from rest_framework import generics, permissions, status, filters
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
+from rest_framework import viewsets
 from django.db.models import Q
-from .models import Note, Tag
-from .serializers import NoteSerializer, NoteListSerializer, TagSerializer
+from .models import Note, Tag, NoteTemplate
+from .serializers import NoteSerializer, NoteListSerializer, TagSerializer, NoteTemplateSerializer
 
 
 class NoteListCreateView(generics.ListCreateAPIView):
@@ -79,3 +80,65 @@ def list_folders(request):
     folders = (Note.objects.filter(user=request.user, folder__gt="")
                .values_list("folder", flat=True).distinct().order_by("folder"))
     return Response({"folders": list(folders)})
+
+
+class NoteTemplateViewSet(viewsets.ModelViewSet):
+    serializer_class = NoteTemplateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return NoteTemplate.objects.filter(user=self.request.user).select_related('user')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def use(self, request, pk=None):
+        """Use a template to create a new note and increment usage count."""
+        template = self.get_object()
+        template.increment_usage()
+
+        # Create a new note from the template
+        note = Note.objects.create(
+            user=request.user,
+            title=template.name,
+            content=template.content,
+            folder=template.category or ''
+        )
+
+        return Response({
+            'note_id': str(note.id),
+            'title': note.title,
+            'content': note.content,
+            'template_used': template.name
+        })
+
+    @action(detail=True, methods=['post'])
+    def favorite(self, request, pk=None):
+        """Toggle favorite status of a template."""
+        template = self.get_object()
+        template.is_favorite = not template.is_favorite
+        template.save()
+        return Response({'is_favorite': template.is_favorite})
+
+    @action(detail=True, methods=['post'])
+    def duplicate(self, request, pk=None):
+        """Create a copy of this template."""
+        template = self.get_object()
+        new_template = template.duplicate_for_user(request.user)
+        serializer = self.get_serializer(new_template)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def favorites(self, request):
+        """Get all favorite templates."""
+        favorites = self.get_queryset().filter(is_favorite=True)
+        serializer = self.get_serializer(favorites, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def system(self, request):
+        """Get all system templates available to all users."""
+        system_templates = NoteTemplate.objects.filter(is_system=True)
+        serializer = self.get_serializer(system_templates, many=True)
+        return Response(serializer.data)

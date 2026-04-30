@@ -1,5 +1,12 @@
-from django.urls import path
-from .views import NoteListCreateView, NoteDetailView, TagListCreateView, summarise_note, ai_tag_note, list_folders
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    NoteListCreateView, NoteDetailView, TagListCreateView,
+    summarise_note, ai_tag_note, list_folders, NoteTemplateViewSet
+)
+
+router = DefaultRouter()
+router.register(r'templates', NoteTemplateViewSet, basename='notetemplate')
 
 urlpatterns = [
     path("", NoteListCreateView.as_view()),
@@ -8,4 +15,5 @@ urlpatterns = [
     path("<uuid:pk>/suggest-tags/", ai_tag_note),
     path("tags/", TagListCreateView.as_view()),
     path("folders/", list_folders),
+    path("", include(router.urls)),
 ]
