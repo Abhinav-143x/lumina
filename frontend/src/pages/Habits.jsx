@@ -2,77 +2,139 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
 
-const COLORS = ['#6366f1','#22c55e','#f59e0b','#ef4444','#14b8a6','#ec4899','#8b5cf6','#f97316']
-const ICONS = ['💪','📚','🧘','🏃','💧','🥗','😴','✍️','🎯','🎸','🧹','💊']
-const CATEGORIES = ['health','fitness','learning','mindfulness','productivity','social','other']
+const COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#14b8a6', '#ec4899', '#8b5cf6', '#f97316']
+const ICONS = ['💪', '📚', '🧘', '🏃', '💧', '🥗', '😴', '✍️', '🎯', '🎸', '🧹', '💊']
+const CATEGORIES = ['health', 'fitness', 'learning', 'mindfulness', 'productivity', 'social', 'other']
 
 function HabitForm({ onSave, onClose }) {
-  const [d, setD] = useState({ name:'', description:'', icon:'💪', color:'#6366f1', category:'health', frequency:'daily', target_count:1 })
+  const [data, setData] = useState({
+    name: '',
+    description: '',
+    icon: '💪',
+    color: '#6366f1',
+    category: 'health',
+    frequency: 'daily',
+    target_count: 1
+  })
   const [saving, setSaving] = useState(false)
-  const set = k => v => setD(p => ({ ...p, [k]: v }))
+
+  const handleChange = (field) => (value) => {
+    setData(prev => ({ ...prev, [field]: value }))
+  }
 
   const save = async () => {
-    if (!d.name.trim()) return
+    if (!data.name.trim()) return
     setSaving(true)
-    try { await api.post('/habits/', d); onSave() }
-    catch (e) { alert(JSON.stringify(e.response?.data)) }
-    finally { setSaving(false) }
+    try {
+      await api.post('/habits/', data)
+      onSave()
+    } catch (e) {
+      alert(JSON.stringify(e.response?.data))
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
-      <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, width:'100%', maxWidth:480, padding:28 }}>
-        <div style={{ fontWeight:600, fontSize:16, marginBottom:20 }}>New Habit</div>
+    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-secondary border border-subtle rounded-2xl w-full max-w-md p-6">
+        <h2 className="text-lg font-semibold mb-6">New Habit</h2>
 
-        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        <div className="space-y-4">
           <div>
-            <label style={{ fontSize:12, color:'var(--muted)', display:'block', marginBottom:4 }}>Name *</label>
-            <input placeholder="e.g. Morning run" value={d.name} onChange={e => set('name')(e.target.value)} />
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Name *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Morning run"
+              value={data.name}
+              onChange={(e) => handleChange('name')(e.target.value)}
+            />
           </div>
 
           <div>
-            <label style={{ fontSize:12, color:'var(--muted)', display:'block', marginBottom:6 }}>Icon</label>
-            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {ICONS.map(ic => (
-                <button key={ic} onClick={() => set('icon')(ic)}
-                  style={{ width:36, height:36, borderRadius:8, border: d.icon === ic ? '2px solid var(--accent)' : '1px solid var(--border)', background:'var(--surface2)', fontSize:18, cursor:'pointer' }}>
-                  {ic}
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Icon
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {ICONS.map((icon) => (
+                <button
+                  key={icon}
+                  onClick={() => handleChange('icon')(icon)}
+                  className={`w-10 h-10 rounded-lg border-2 text-xl transition-all ${
+                    data.icon === icon
+                      ? 'border-accent bg-accent/20'
+                      : 'border-subtle hover:border-accent/50'
+                  }`}
+                >
+                  {icon}
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize:12, color:'var(--muted)', display:'block', marginBottom:6 }}>Color</label>
-            <div style={{ display:'flex', gap:6 }}>
-              {COLORS.map(c => (
-                <button key={c} onClick={() => set('color')(c)}
-                  style={{ width:28, height:28, borderRadius:'50%', background:c, border: d.color === c ? '3px solid white' : '2px solid transparent', cursor:'pointer' }} />
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Color
+            </label>
+            <div className="flex gap-2">
+              {COLORS.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => handleChange('color')(color)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    data.color === color
+                      ? 'border-white scale-110'
+                      : 'border-transparent hover:scale-110'
+                  }`}
+                  style={{ background: color }}
+                />
               ))}
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize:12, color:'var(--muted)', display:'block', marginBottom:4 }}>Category</label>
-            <select value={d.category} onChange={e => set('category')(e.target.value)}>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c.charAt(0).toUpperCase()+c.slice(1)}</option>)}
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Category
+            </label>
+            <select
+              value={data.category}
+              onChange={(e) => handleChange('category')(e.target.value)}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c.charAt(0).toUpperCase() + c.slice(1)}
+                </option>
+              ))}
             </select>
           </div>
 
           <div>
-            <label style={{ fontSize:12, color:'var(--muted)', display:'block', marginBottom:4 }}>Frequency</label>
-            <select value={d.frequency} onChange={e => set('frequency')(e.target.value)}>
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Frequency
+            </label>
+            <select
+              value={data.frequency}
+              onChange={(e) => handleChange('frequency')(e.target.value)}
+            >
               <option value="daily">Daily</option>
               <option value="weekdays">Weekdays only</option>
               <option value="weekends">Weekends only</option>
             </select>
           </div>
 
-          <div style={{ display:'flex', gap:16, marginTop:4 }}>
-            <button className="btn btn-primary" onClick={save} disabled={saving} style={{ flex:1 }}>
-              {saving ? 'Saving…' : 'Create Habit'}
+          <div className="flex gap-3 pt-4">
+            <button
+              onClick={save}
+              disabled={saving}
+              className="btn btn-primary flex-1"
+            >
+              {saving ? 'Saving...' : 'Create Habit'}
             </button>
-            <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
+            <button onClick={onClose} className="btn btn-ghost">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
@@ -85,40 +147,64 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
 
   const checkIn = async () => {
     setChecking(true)
-    try { await onCheckIn(habit.id, !habit.completed_today) }
-    finally { setChecking(false) }
+    try {
+      await onCheckIn(habit.id, !habit.completed_today)
+    } finally {
+      setChecking(false)
+    }
   }
 
-  const streakColor = habit.streak?.current >= 7 ? 'var(--green)' : habit.streak?.current >= 3 ? 'var(--amber)' : 'var(--muted)'
+  const streakColor =
+    habit.streak?.current >= 7
+      ? 'text-success'
+      : habit.streak?.current >= 3
+      ? 'text-warning'
+      : 'text-tertiary'
 
   return (
-    <div className="card" style={{ display:'flex', alignItems:'center', gap:16, padding:'16px 20px' }}>
-      {/* Check button */}
-      <button onClick={checkIn} disabled={checking}
-        style={{
-          width:44, height:44, borderRadius:'50%', flexShrink:0,
-          border: `2px solid ${habit.completed_today ? habit.color : 'var(--border)'}`,
-          background: habit.completed_today ? habit.color : 'transparent',
-          fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
-          transition: 'all .2s',
-        }}>
-        {habit.completed_today ? '✓' : habit.icon}
-      </button>
+    <div className="card group hover:scale-[1.01] transition-all duration-200">
+      <div className="flex items-center gap-4">
+        {/* Check button */}
+        <button
+          onClick={checkIn}
+          disabled={checking}
+          className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-2xl transition-all duration-200 ${
+            habit.completed_today
+              ? 'bg-opacity-20 border-2'
+              : 'border-2 hover:border-accent/50'
+          }`}
+          style={{
+            borderColor: habit.completed_today ? habit.color : 'var(--border)',
+            background: habit.completed_today ? habit.color : 'transparent',
+          }}
+        >
+          {habit.completed_today ? '✓' : habit.icon}
+        </button>
 
-      <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontWeight:600, fontSize:14 }}>{habit.name}</div>
-        <div style={{ fontSize:11, color:'var(--muted)', marginTop:2, display:'flex', gap:10, flexWrap:'wrap' }}>
-          <span>{habit.category}</span>
-          <span>·</span>
-          <span style={{ color: streakColor }}>🔥 {habit.streak?.current ?? 0} day streak</span>
-          <span>·</span>
-          <span>{habit.completion_rate_30d}% last 30d</span>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-base">{habit.name}</h3>
+          <div className="flex items-center gap-2 text-xs text-tertiary mt-1 flex-wrap">
+            <span className="capitalize">{habit.category}</span>
+            <span>·</span>
+            <span className={streakColor}>
+              🔥 {habit.streak?.current ?? 0} day streak
+            </span>
+            <span>·</span>
+            <span>{habit.completion_rate_30d}% last 30d</span>
+          </div>
         </div>
-      </div>
 
-      <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-        <Link to={`/habits/${habit.id}`} className="btn btn-ghost btn-sm">Analytics</Link>
-        <button className="btn btn-danger btn-sm" onClick={() => onDelete(habit.id)}>✕</button>
+        <div className="flex items-center gap-2">
+          <Link to={`/habits/${habit.id}`} className="btn btn-ghost btn-sm">
+            Analytics
+          </Link>
+          <button
+            onClick={() => onDelete(habit.id)}
+            className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            🗑️
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -136,10 +222,14 @@ export default function Habits() {
     try {
       const { data } = await api.get('/habits/?active=true')
       setHabits(data.results || data)
-    } finally { setLoading(false) }
+    } finally {
+      setLoading(false)
+    }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+  }, [])
 
   const checkIn = async (id, doCheck) => {
     if (doCheck) {
@@ -161,71 +251,123 @@ export default function Habits() {
     try {
       const { data } = await api.post('/habits/ai-report/')
       setAiReport(data.report)
-    } catch { setAiReport('AI report unavailable. Check your API key.') }
-    finally { setReportLoading(false) }
+    } catch {
+      setAiReport('AI report unavailable. Check your API key.')
+    } finally {
+      setReportLoading(false)
+    }
   }
 
-  const completedToday = habits.filter(h => h.completed_today).length
+  const completedToday = habits.filter((h) => h.completed_today).length
 
   return (
-    <div>
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 }}>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 style={{ fontSize:22, fontWeight:600 }}>◉ Habits</h1>
-          <p style={{ fontSize:13, color:'var(--muted)', marginTop:2 }}>
+          <h1 className="text-2xl font-bold mb-2">✅ Habits</h1>
+          <p className="text-secondary">
             {completedToday}/{habits.length} done today
           </p>
         </div>
-        <div style={{ display:'flex', gap:8 }}>
-          <button className="btn btn-ghost" onClick={getAiReport} disabled={reportLoading}>
-            {reportLoading ? '◆ Generating…' : '◆ AI Insight'}
+        <div className="flex gap-2">
+          <button
+            onClick={getAiReport}
+            disabled={reportLoading}
+            className="btn btn-ghost"
+          >
+            {reportLoading ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Generating...
+              </>
+            ) : (
+              '🤖 AI Insight'
+            )}
           </button>
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ New Habit</button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="btn btn-primary"
+          >
+            <span className="text-lg">+</span> New Habit
+          </button>
         </div>
       </div>
 
+      {/* AI Report */}
       {aiReport && (
-        <div className="card" style={{ marginBottom:20, borderColor:'rgba(99,102,241,.4)', background:'var(--accent-light)' }}>
-          <div style={{ fontSize:11, fontWeight:600, color:'var(--accent)', marginBottom:8 }}>◆ AI WEEKLY INSIGHT</div>
-          <div style={{ fontSize:13, lineHeight:1.8 }}>{aiReport}</div>
+        <div className="card bg-accent/5 border-accent/20">
+          <div className="text-xs font-semibold text-accent mb-2">
+            🤖 AI WEEKLY INSIGHT
+          </div>
+          <div className="text-sm leading-relaxed">{aiReport}</div>
         </div>
       )}
 
-      {/* Progress bar */}
+      {/* Progress Card */}
       {habits.length > 0 && (
-        <div className="card" style={{ marginBottom:20, padding:'14px 20px' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', fontSize:12, color:'var(--muted)', marginBottom:8 }}>
-            <span>Today's progress</span>
-            <span style={{ fontWeight:600, color:'var(--text)' }}>{completedToday}/{habits.length}</span>
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-secondary">Today's progress</span>
+            <span className="text-sm font-semibold">
+              {completedToday}/{habits.length}
+            </span>
           </div>
-          <div style={{ height:6, background:'var(--surface2)', borderRadius:3, overflow:'hidden' }}>
-            <div style={{
-              height:'100%', borderRadius:3, background:'var(--green)',
-              width: `${habits.length ? (completedToday/habits.length*100) : 0}%`,
-              transition: 'width .5s ease',
-            }} />
+          <div className="h-2 bg-tertiary/50 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-success to-emerald-600 rounded-full transition-all duration-500"
+              style={{
+                width: `${habits.length ? (completedToday / habits.length) * 100 : 0}%`,
+              }}
+            />
           </div>
         </div>
       )}
 
+      {/* Habits List */}
       {loading ? (
-        <div style={{ color:'var(--muted)', fontSize:13 }}>Loading habits…</div>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
+        </div>
       ) : habits.length === 0 ? (
-        <div className="card" style={{ textAlign:'center', padding:48 }}>
-          <div style={{ fontSize:32, marginBottom:12 }}>🎯</div>
-          <div style={{ fontWeight:600, marginBottom:8 }}>No habits yet</div>
-          <div style={{ fontSize:13, color:'var(--muted)', marginBottom:16 }}>Start building your first habit to track progress.</div>
-          <button className="btn btn-primary" onClick={() => setShowForm(true)}>Create first habit</button>
+        <div className="card text-center py-12">
+          <div className="text-4xl mb-3">🎯</div>
+          <h3 className="font-semibold mb-2">No habits yet</h3>
+          <p className="text-secondary mb-4">
+            Start building your first habit to track progress.
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="btn btn-primary"
+          >
+            Create first habit
+          </button>
         </div>
       ) : (
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          {habits.map(h => (
-            <HabitCard key={h.id} habit={h} onCheckIn={checkIn} onDelete={deleteHabit} />
+        <div className="space-y-3">
+          {habits.map((habit) => (
+            <HabitCard
+              key={habit.id}
+              habit={habit}
+              onCheckIn={checkIn}
+              onDelete={deleteHabit}
+            />
           ))}
         </div>
       )}
 
-      {showForm && <HabitForm onSave={() => { setShowForm(false); load() }} onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <HabitForm
+          onSave={() => {
+            setShowForm(false)
+            load()
+          }}
+          onClose={() => setShowForm(false)}
+        />
+      )}
     </div>
   )
 }
