@@ -10,6 +10,23 @@
 
 A full-stack productivity app combining **notes with AI summarisation**, **habit tracking with analytics**, **calendar with reminders**, and an **AI assistant** that knows your entire context.
 
+## 🎯 What's New in v2.0
+
+### 🎨 Complete Frontend Redesign
+- **Modern design system** with sophisticated color palette and typography
+- **Responsive layouts** that work beautifully on all screen sizes
+- **Smooth animations** and micro-interactions throughout
+- **Enhanced user experience** with improved visual hierarchy
+- **Production-grade UI** that avoids generic aesthetics
+
+### 🚀 Enhanced Features
+- **Improved Dashboard** with modern stat cards and quick actions
+- **Better Notes editor** with enhanced AI integration
+- **Streamlined Habits tracking** with visual progress indicators
+- **Modern Calendar interface** with improved event management
+- **Enhanced AI Chat** with better conversation experience
+- **Comprehensive Reminders** system with modern management UI
+
 ---
 
 ## ✨ Features
@@ -94,7 +111,7 @@ docker compose exec api python manage.py createsuperuser
 
 | URL | Description |
 |-----|-------------|
-| `http://localhost:5173` | React frontend |
+| `http://localhost:5174` | React frontend |
 | `http://localhost:8000/api/docs/` | API documentation |
 | `http://localhost:8000/admin/` | Django admin |
 
@@ -202,6 +219,34 @@ Access via **Reminders → Preferences**:
 
 ---
 
+## 🏗️ Architecture
+
+```
+Browser (React + Vite)
+        │  REST API
+        ▼
+Django 4.2 + DRF ──► PostgreSQL (notes, habits, events, users)
+        │
+        ├──► Redis ──► Celery Worker (background tasks)
+        │         └──► Celery Beat (scheduled reminders)
+        │
+        └──► Anthropic Claude API (summarise, tag, chat, plan)
+```
+
+### Tech Stack
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + Vite |
+| Backend | Django 4.2 + DRF 3.15 |
+| Database | PostgreSQL 15 |
+| Cache/Broker | Redis 7 |
+| Background Tasks | Celery 5.3 + Celery Beat |
+| AI | Anthropic Claude API |
+| Charts | Recharts 2.12 |
+| Container | Docker + Docker Compose |
+
+---
+
 ## 📱 Screenshots
 
 ### Dashboard
@@ -218,6 +263,8 @@ Access via **Reminders → Preferences**:
 ## 🤝 Support
 
 - **Documentation**: Check the [Developer README](README_DEVELOPER.md) for technical details
+- **Decision Log**: See [DECISIONS.md](DECISIONS.md) for architectural decisions
+- **Project Summary**: Quick overview in [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)
 - **Issues**: Report bugs at https://github.com/Abhinav-143x/lumina/issues
 - **API Docs**: Available at `/api/docs/` when running locally
 
