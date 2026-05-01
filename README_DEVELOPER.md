@@ -1,6 +1,6 @@
 # Lumina Developer Guide
 
-Technical documentation for developers working on Lumina.
+Technical documentation for developers working on Lumina v2.0.
 
 ## 🏗️ Architecture
 
@@ -15,6 +15,7 @@ Technical documentation for developers working on Lumina.
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐                     │
 │  │ AI Chat  │ │Reminders │ │ Templates│                     │
 │  └──────────┘ └──────────┘ └──────────┘                     │
+│  Modern Design System (CSS Variables + Utility Classes)      │
 └─────────────────────────────────────────────────────────────┘
                               │ REST API
                               ▼
@@ -46,6 +47,7 @@ Technical documentation for developers working on Lumina.
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Frontend** | React 18 + Vite | SPA with hot reload |
+| **Design System** | Custom CSS + Variables | Modern, distinctive UI |
 | **Backend** | Django 4.2 + DRF 3.15 | REST API framework |
 | **Database** | PostgreSQL 15 | Primary data store |
 | **Cache** | Redis 7 | Caching & message broker |
@@ -100,17 +102,20 @@ lumina/
 ├── frontend/                      # React frontend
 │   ├── src/
 │   │   ├── pages/                 # Page components
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Notes.jsx
-│   │   │   ├── Habits.jsx
-│   │   │   ├── HabitDetail.jsx
-│   │   │   ├── CalendarPage.jsx
-│   │   │   ├── AIChat.jsx
-│   │   │   └── Reminders.jsx
+│   │   │   ├── Dashboard.jsx      # Main dashboard with stats
+│   │   │   ├── Notes.jsx          # Notes CRUD with AI
+│   │   │   ├── Habits.jsx         # Habit tracking
+│   │   │   ├── HabitDetail.jsx    # Habit analytics
+│   │   │   ├── CalendarPage.jsx   # Calendar management
+│   │   │   ├── AIChat.jsx         # AI assistant
+│   │   │   ├── Reminders.jsx      # Reminder management
+│   │   │   ├── Login.jsx          # Authentication
+│   │   │   └── Register.jsx       # User registration
 │   │   ├── components/            # Reusable components
 │   │   │   └── Layout.jsx        # Main layout with sidebar
 │   │   ├── api/
 │   │   │   └── client.js          # Axios with JWT handling
+│   │   ├── index.css              # Design system & utilities
 │   │   ├── App.jsx                # Root component
 │   │   └── main.jsx               # Entry point
 │   ├── package.json              # Node dependencies
@@ -170,10 +175,183 @@ docker compose exec api python manage.py createsuperuser
 
 #### 5. Access Services
 
-- Frontend: http://localhost:5173
+- Frontend: http://localhost:5174
 - API: http://localhost:8000
 - Admin: http://localhost:8000/admin
 - API Docs: http://localhost:8000/api/docs/
+
+## 🎨 Frontend Design System (v2.0)
+
+### Design Philosophy
+
+Lumina v2.0 features a distinctive, modern design system that avoids generic AI-generated aesthetics. The design focuses on:
+
+- **Sophisticated Colors**: Deep blues and purples with vibrant accents
+- **Modern Typography**: Clean hierarchy with proper spacing
+- **Smooth Interactions**: Micro-animations and transitions throughout
+- **Responsive Design**: Works beautifully on all screen sizes
+- **Distinctive Identity**: Avoids generic purple-on-white AI aesthetics
+
+### Color Palette
+
+```css
+/* Core Colors */
+--bg-primary: #0a0e17;      /* Main background */
+--bg-secondary: #111827;    /* Card backgrounds */
+--bg-tertiary: #1f2937;     /* Elevated surfaces */
+--bg-elevated: #1e2535;     /* Hover states */
+
+/* Text Colors */
+--text-primary: #f1f5f9;    /* Main text */
+--text-secondary: #94a3b8;  /* Secondary text */
+--text-tertiary: #64748b;   /* Muted text */
+--text-muted: #475569;      /* Disabled text */
+
+/* Accent Colors */
+--accent-primary: #6366f1;  /* Main accent (indigo) */
+--accent-secondary: #8b5cf6; /* Secondary accent (purple) */
+--accent-tertiary: #a855f7;  /* Tertiary accent (violet) */
+--accent-light: rgba(99, 102, 241, 0.15);
+--accent-glow: rgba(99, 102, 241, 0.3);
+
+/* Semantic Colors */
+--success: #10b981;         /* Green */
+--warning: #f59e0b;         /* Amber */
+--error: #ef4444;           /* Red */
+--info: #3b82f6;            /* Blue */
+
+/* Border Colors */
+--border-subtle: rgba(148, 163, 184, 0.1);
+--border-default: rgba(148, 163, 184, 0.2);
+--border-strong: rgba(148, 163, 184, 0.3);
+--border-focus: rgba(99, 102, 241, 0.5);
+```
+
+### Typography Scale
+
+```css
+--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+--font-mono: 'Fira Code', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+/* Font Sizes */
+.text-xs { font-size: 11px; }
+.text-sm { font-size: 13px; }
+.text-base { font-size: 14px; }
+.text-lg { font-size: 16px; }
+.text-xl { font-size: 18px; }
+.text-2xl { font-size: 24px; }
+.text-3xl { font-size: 30px; }
+.text-4xl { font-size: 36px; }
+.text-5xl { font-size: 48px; }
+```
+
+### Spacing Scale
+
+```css
+--space-1: 4px;
+--space-2: 8px;
+--space-3: 12px;
+--space-4: 16px;
+--space-5: 20px;
+--space-6: 24px;
+--space-8: 32px;
+--space-10: 40px;
+--space-12: 48px;
+--space-16: 64px;
+--space-20: 80px;
+```
+
+### Component Patterns
+
+#### Cards
+```jsx
+<div className="card">
+  {/* Card content */}
+</div>
+```
+
+#### Buttons
+```jsx
+<button className="btn btn-primary">Primary</button>
+<button className="btn btn-secondary">Secondary</button>
+<button className="btn btn-ghost">Ghost</button>
+<button className="btn btn-danger">Danger</button>
+```
+
+#### Badges
+```jsx
+<span className="badge badge-primary">Primary</span>
+<span className="badge badge-success">Success</span>
+<span className="badge badge-warning">Warning</span>
+<span className="badge badge-error">Error</span>
+```
+
+#### Tags
+```jsx
+<span className="tag-pill">Tag Name</span>
+```
+
+### Animations
+
+```css
+/* Fade In */
+.animate-fade-in
+
+/* Slide In */
+.animate-slide-in
+
+/* Pulse */
+.animate-pulse
+
+/* Custom animations with CSS variables */
+--transition-fast: 150ms ease;
+--transition-base: 200ms ease;
+--transition-slow: 300ms ease;
+```
+
+### Responsive Design
+
+The design system is mobile-first with breakpoints:
+
+```css
+@media (max-width: 768px) {
+  /* Mobile styles */
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+### Utility Classes
+
+The design system includes comprehensive utility classes for:
+
+- **Layout**: flex, grid, spacing, positioning
+- **Typography**: font sizes, weights, colors
+- **Colors**: backgrounds, text, borders
+- **Effects**: shadows, transitions, transforms
+- **Responsive**: breakpoints, visibility
+
+All utility classes follow a consistent naming pattern and are defined in `frontend/src/index.css`.
+
+### Design Guidelines
+
+1. **Use CSS Variables**: Always use CSS variables for colors, spacing, and typography
+2. **Semantic Colors**: Use semantic colors (success, warning, error) for status indicators
+3. **Consistent Spacing**: Follow the spacing scale for consistent layouts
+4. **Smooth Transitions**: Add transitions to all interactive elements
+5. **Accessibility**: Ensure proper contrast ratios and keyboard navigation
+6. **Responsive**: Test on multiple screen sizes
+7. **Performance**: Use CSS transforms and opacity for animations
+
+### Customization
+
+To customize the design system:
+
+1. Edit `frontend/src/index.css` to modify CSS variables
+2. Add new utility classes following existing patterns
+3. Update component styles to use new variables
+4. Test across all pages for consistency
 
 ### Frontend Development
 
