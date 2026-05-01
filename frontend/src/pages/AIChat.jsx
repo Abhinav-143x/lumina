@@ -13,20 +13,19 @@ const STARTERS = [
 function Message({ msg }) {
   const isUser = msg.role === 'user'
   return (
-    <div style={{
-      display:'flex', justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom:16, alignItems:'flex-end', gap:8,
-    }}>
+    <div className={`flex gap-3 mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
       {!isUser && (
-        <div style={{ width:28, height:28, borderRadius:'50%', background:'var(--accent)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, flexShrink:0, marginBottom:2 }}>◆</div>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-sm font-bold flex-shrink-0">
+          🤖
+        </div>
       )}
-      <div style={{
-        maxWidth:'72%', padding:'12px 16px', borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-        background: isUser ? 'var(--accent)' : 'var(--surface2)',
-        border: isUser ? 'none' : '1px solid var(--border)',
-        fontSize:13, lineHeight:1.7,
-        whiteSpace:'pre-wrap',
-      }}>
+      <div
+        className={`max-w-[72%] px-4 py-3 text-sm leading-relaxed ${
+          isUser
+            ? 'bg-gradient-to-r from-accent to-secondary text-white rounded-2xl rounded-tr-sm'
+            : 'bg-tertiary/50 border border-subtle rounded-2xl rounded-tl-sm'
+        }`}
+      >
         {msg.content}
       </div>
     </div>
@@ -40,7 +39,7 @@ export default function AIChat() {
   const bottomRef = useRef(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior:'smooth' })
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const send = async (text) => {
@@ -48,54 +47,63 @@ export default function AIChat() {
     if (!content || loading) return
     setInput('')
 
-    const newMessages = [...messages, { role:'user', content }]
+    const newMessages = [...messages, { role: 'user', content }]
     setMessages(newMessages)
     setLoading(true)
 
     try {
       const { data } = await api.post('/ai/chat/', { messages: newMessages })
-      setMessages(m => [...m, { role:'assistant', content: data.reply }])
+      setMessages((m) => [...m, { role: 'assistant', content: data.reply }])
     } catch (e) {
-      setMessages(m => [...m, { role:'assistant', content:'Sorry, something went wrong. Please check that your ANTHROPIC_API_KEY is set in .env.' }])
-    } finally { setLoading(false) }
+      setMessages((m) => [
+        ...m,
+        {
+          role: 'assistant',
+          content:
+            'Sorry, something went wrong. Please check that your ANTHROPIC_API_KEY is set in .env.',
+        },
+      ])
+    } finally {
+      setLoading(false)
+    }
   }
 
   const clear = () => setMessages([])
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'calc(100vh - 64px)' }}>
+    <div className="flex flex-col h-[calc(100vh-140px)]">
       {/* Header */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20, flexShrink:0 }}>
+      <div className="flex items-center justify-between mb-6 flex-shrink-0">
         <div>
-          <h1 style={{ fontSize:22, fontWeight:600 }}>◆ AI Assistant</h1>
-          <p style={{ fontSize:13, color:'var(--muted)', marginTop:2 }}>Context-aware — knows your notes, habits, and calendar</p>
+          <h1 className="text-2xl font-bold mb-2">🤖 AI Assistant</h1>
+          <p className="text-secondary">
+            Context-aware — knows your notes, habits, and calendar
+          </p>
         </div>
         {messages.length > 0 && (
-          <button className="btn btn-ghost btn-sm" onClick={clear}>Clear chat</button>
+          <button onClick={clear} className="btn btn-ghost btn-sm">
+            Clear chat
+          </button>
         )}
       </div>
 
       {/* Messages */}
-      <div style={{ flex:1, overflowY:'auto', paddingRight:8, marginBottom:16 }}>
+      <div className="flex-1 overflow-y-auto pr-2 mb-4">
         {messages.length === 0 ? (
-          <div>
-            <div style={{ textAlign:'center', padding:'40px 0 32px' }}>
-              <div style={{ fontSize:40, marginBottom:12 }}>◆</div>
-              <div style={{ fontSize:16, fontWeight:600, marginBottom:6 }}>Lumina AI</div>
-              <div style={{ fontSize:13, color:'var(--muted)' }}>I know your notes, habits and calendar. Ask me anything.</div>
-            </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, maxWidth:540, margin:'0 auto' }}>
-              {STARTERS.map(s => (
-                <button key={s} onClick={() => send(s)}
-                  style={{
-                    padding:'10px 14px', borderRadius:10, fontSize:12, textAlign:'left',
-                    background:'var(--surface)', border:'1px solid var(--border)', color:'var(--text)',
-                    cursor:'pointer', lineHeight:1.5, transition:'border-color .15s',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor='var(--accent)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}
+          <div className="text-center py-12">
+            <div className="text-5xl mb-4">🤖</div>
+            <h3 className="text-xl font-semibold mb-2">Lumina AI</h3>
+            <p className="text-secondary mb-8">
+              I know your notes, habits and calendar. Ask me anything.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
+              {STARTERS.map((starter) => (
+                <button
+                  key={starter}
+                  onClick={() => send(starter)}
+                  className="p-4 rounded-xl bg-tertiary/30 border border-subtle text-left text-sm hover:border-accent/30 hover:bg-tertiary/50 transition-all"
                 >
-                  {s}
+                  {starter}
                 </button>
               ))}
             </div>
@@ -105,15 +113,18 @@ export default function AIChat() {
         )}
 
         {loading && (
-          <div style={{ display:'flex', gap:8, alignItems:'flex-end', marginBottom:16 }}>
-            <div style={{ width:28, height:28, borderRadius:'50%', background:'var(--accent)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 }}>◆</div>
-            <div style={{ padding:'12px 16px', borderRadius:'16px 16px 16px 4px', background:'var(--surface2)', border:'1px solid var(--border)' }}>
-              <div style={{ display:'flex', gap:4, alignItems:'center' }}>
-                {[0,1,2].map(i => (
-                  <div key={i} style={{
-                    width:6, height:6, borderRadius:'50%', background:'var(--accent)',
-                    animation:`bounce 1.2s ${i*0.2}s infinite`,
-                  }} />
+          <div className="flex gap-3 mb-4">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-sm font-bold">
+              🤖
+            </div>
+            <div className="px-4 py-3 bg-tertiary/50 border border-subtle rounded-2xl rounded-tl-sm">
+              <div className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 rounded-full bg-accent animate-bounce"
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  />
                 ))}
               </div>
             </div>
@@ -123,30 +134,39 @@ export default function AIChat() {
       </div>
 
       {/* Input */}
-      <div style={{ flexShrink:0, display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, padding:'8px 8px 8px 16px' }}>
-        <textarea
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
-          placeholder="Ask anything… (Enter to send, Shift+Enter for newline)"
-          style={{ flex:1, border:'none', background:'transparent', resize:'none', minHeight:44, maxHeight:120, lineHeight:1.6, fontSize:14, padding:'8px 0', borderRadius:0 }}
-          rows={1}
-        />
-        <button className="btn btn-primary"
-          onClick={() => send()}
-          disabled={!input.trim() || loading}
-          style={{ alignSelf:'flex-end', borderRadius:8, padding:'10px 18px' }}
-        >
-          ↑
-        </button>
+      <div className="flex-shrink-0">
+        <div className="flex gap-3 bg-tertiary/30 border border-subtle rounded-xl p-2">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                send()
+              }
+            }}
+            placeholder="Ask anything… (Enter to send, Shift+Enter for newline)"
+            className="flex-1 bg-transparent border-none resize-none min-h-[44px] max-h-[120px] leading-relaxed text-sm p-2"
+            rows={1}
+          />
+          <button
+            onClick={() => send()}
+            disabled={!input.trim() || loading}
+            className="btn btn-primary self-end"
+          >
+            {loading ? (
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
-
-      <style>{`
-        @keyframes bounce {
-          0%,80%,100% { transform: translateY(0); }
-          40% { transform: translateY(-6px); }
-        }
-      `}</style>
     </div>
   )
 }
