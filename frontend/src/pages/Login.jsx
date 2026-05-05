@@ -34,21 +34,21 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
+    <div className="min-h-screen flex items-center justify-center bg-secondary p-4">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-secondary mb-4 shadow-glow">
-            <span className="text-3xl font-bold">L</span>
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br from-accent to-secondary mb-4">
+            <span className="text-3xl font-bold text-white">L</span>
           </div>
           <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
-          <p className="text-secondary">Sign in to your second brain</p>
+          <p className="text-sm text-secondary">Sign in to your second brain</p>
         </div>
 
         {/* Login Form */}
-        <div className="card animate-slide-in">
+        <div className="card">
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm">
+            <div className="mb-4 p-3 rounded bg-error/10 border border-error/20 text-error text-sm">
               {error}
             </div>
           )}
@@ -64,7 +64,6 @@ export default function Login() {
                 value={data.username}
                 onChange={handleChange('username')}
                 required
-                className="w-full"
               />
             </div>
 
@@ -78,14 +77,13 @@ export default function Login() {
                 value={data.password}
                 onChange={handleChange('password')}
                 required
-                className="w-full"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full btn-lg"
+              className="btn btn-primary w-full"
             >
               {loading ? (
                 <>
@@ -103,7 +101,7 @@ export default function Login() {
 
           <div className="mt-6 text-center text-sm text-secondary">
             Don't have an account?{' '}
-            <Link to="/register" className="text-accent hover:underline font-medium">
+            <Link to="/register" className="text-accent font-medium">
               Register free
             </Link>
           </div>

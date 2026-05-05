@@ -103,14 +103,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-2">
+          <h1>
             {greeting}, {user.username || 'User'} 👋
           </h1>
-          <p className="text-secondary">
+          <p className="text-sm text-secondary">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -158,9 +158,9 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* AI Day Plan */}
         <div className="card">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-secondary/20 flex items-center justify-center text-xl">
+              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
                 🤖
               </div>
               <div>
@@ -190,9 +190,7 @@ export default function Dashboard() {
           </div>
 
           {plan ? (
-            <div className="prose prose-invert prose-sm max-w-none">
-              <div className="text-sm leading-relaxed whitespace-pre-wrap">{plan}</div>
-            </div>
+            <div className="text-sm leading-relaxed whitespace-pre-wrap">{plan}</div>
           ) : (
             <div className="text-center py-8">
               <div className="text-4xl mb-3">🎯</div>
@@ -205,9 +203,9 @@ export default function Dashboard() {
 
         {/* Upcoming Events */}
         <div className="card">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-info/20 to-blue-600/20 flex items-center justify-center text-xl">
+              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
                 📅
               </div>
               <div>
@@ -215,7 +213,7 @@ export default function Dashboard() {
                 <p className="text-xs text-tertiary">Next 5 events</p>
               </div>
             </div>
-            <Link to="/calendar" className="text-accent text-sm hover:underline">
+            <Link to="/calendar" className="text-accent text-sm">
               View all →
             </Link>
           </div>
@@ -233,10 +231,10 @@ export default function Dashboard() {
               {upcoming.slice(0, 5).map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-tertiary/30 border border-subtle hover:border-accent/20 transition-colors"
+                  className="flex items-start gap-3 p-3 rounded bg-secondary"
                 >
                   <div
-                    className="w-1 rounded-full self-stretch"
+                    className="w-1 rounded self-stretch"
                     style={{ background: `var(--${event.color || 'accent'})` }}
                   />
                   <div className="flex-1 min-w-0">
@@ -258,9 +256,9 @@ export default function Dashboard() {
 
         {/* Recent Notes */}
         <div className="card">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-secondary/20 flex items-center justify-center text-xl">
+              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
                 📝
               </div>
               <div>
@@ -268,7 +266,7 @@ export default function Dashboard() {
                 <p className="text-xs text-tertiary">Latest activity</p>
               </div>
             </div>
-            <Link to="/notes" className="text-accent text-sm hover:underline">
+            <Link to="/notes" className="text-accent text-sm">
               View all →
             </Link>
           </div>
@@ -287,17 +285,15 @@ export default function Dashboard() {
                 <Link
                   key={note.id}
                   to={`/notes/${note.id}`}
-                  className="block p-3 rounded-lg bg-tertiary/30 border border-subtle hover:border-accent/20 transition-colors group"
+                  className="block p-3 rounded bg-secondary hover:bg-tertiary transition-colors"
                 >
-                  <div className="font-medium text-sm truncate group-hover:text-accent transition-colors">
-                    {note.title}
-                  </div>
+                  <div className="font-medium text-sm truncate">{note.title}</div>
                   {note.summary && (
                     <div className="text-xs text-tertiary mt-1 line-clamp-2">{note.summary}</div>
                   )}
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     {note.tags?.map((tag) => (
-                      <span key={tag.id} className="tag-pill text-xs">
+                      <span key={tag.id} className="tag text-xs">
                         {tag.name}
                       </span>
                     ))}
@@ -310,8 +306,8 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="card">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-secondary/20 flex items-center justify-center text-xl">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
               ⚡
             </div>
             <div>

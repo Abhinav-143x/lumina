@@ -36,8 +36,8 @@ function HabitForm({ onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-secondary border border-subtle rounded-2xl w-full max-w-md p-6">
+    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
+      <div className="bg-white border border rounded-lg w-full max-w-md p-6">
         <h2 className="text-lg font-semibold mb-6">New Habit</h2>
 
         <div className="space-y-4">
@@ -62,10 +62,10 @@ function HabitForm({ onSave, onClose }) {
                 <button
                   key={icon}
                   onClick={() => handleChange('icon')(icon)}
-                  className={`w-10 h-10 rounded-lg border-2 text-xl transition-all ${
+                  className={`w-10 h-10 rounded border-2 text-xl transition-colors ${
                     data.icon === icon
-                      ? 'border-accent bg-accent/20'
-                      : 'border-subtle hover:border-accent/50'
+                      ? 'border-accent bg-accent/10'
+                      : 'border hover:border-accent'
                   }`}
                 >
                   {icon}
@@ -83,7 +83,7 @@ function HabitForm({ onSave, onClose }) {
                 <button
                   key={color}
                   onClick={() => handleChange('color')(color)}
-                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                  className={`w-8 h-8 rounded-full border-2 transition-colors ${
                     data.color === color
                       ? 'border-white scale-110'
                       : 'border-transparent hover:scale-110'
@@ -162,16 +162,16 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
       : 'text-tertiary'
 
   return (
-    <div className="card group hover:scale-[1.01] transition-all duration-200">
+    <div className="card">
       <div className="flex items-center gap-4">
         {/* Check button */}
         <button
           onClick={checkIn}
           disabled={checking}
-          className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-2xl transition-all duration-200 ${
+          className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-2xl transition-colors ${
             habit.completed_today
               ? 'bg-opacity-20 border-2'
-              : 'border-2 hover:border-accent/50'
+              : 'border-2 hover:border-accent'
           }`}
           style={{
             borderColor: habit.completed_today ? habit.color : 'var(--border)',
@@ -261,12 +261,12 @@ export default function Habits() {
   const completedToday = habits.filter((h) => h.completed_today).length
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-2">✅ Habits</h1>
-          <p className="text-secondary">
+          <h1>✅ Habits</h1>
+          <p className="text-sm text-secondary">
             {completedToday}/{habits.length} done today
           </p>
         </div>
@@ -316,9 +316,9 @@ export default function Habits() {
               {completedToday}/{habits.length}
             </span>
           </div>
-          <div className="h-2 bg-tertiary/50 rounded-full overflow-hidden">
+          <div className="h-2 bg-tertiary rounded overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-success to-emerald-600 rounded-full transition-all duration-500"
+              className="h-full bg-success rounded transition-all duration-500"
               style={{
                 width: `${habits.length ? (completedToday / habits.length) * 100 : 0}%`,
               }}

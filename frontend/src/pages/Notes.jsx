@@ -56,10 +56,10 @@ function NoteEditor({ note, onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-secondary border border-subtle rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
+      <div className="bg-white border border rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-subtle">
+        <div className="flex items-center justify-between p-6 border-b">
           <div>
             <h2 className="text-lg font-semibold">{note?.id ? 'Edit Note' : 'New Note'}</h2>
             <p className="text-xs text-tertiary mt-1">Write in markdown format</p>
@@ -121,7 +121,7 @@ function NoteEditor({ note, onSave, onClose }) {
           />
 
           {summary && (
-            <div className="p-4 rounded-xl bg-accent/10 border border-accent/20">
+            <div className="p-4 rounded bg-accent/10 border border-accent/20">
               <div className="text-xs font-semibold text-accent mb-2">✨ AI SUMMARY</div>
               <div className="text-sm leading-relaxed">{summary}</div>
             </div>
@@ -132,7 +132,7 @@ function NoteEditor({ note, onSave, onClose }) {
               <div className="text-xs text-tertiary mb-2">🏷️ Suggested tags:</div>
               <div className="flex flex-wrap gap-2">
                 {tagSuggestions.map((tag) => (
-                  <span key={tag} className="tag-pill">
+                  <span key={tag} className="tag">
                     {tag}
                   </span>
                 ))}
@@ -158,7 +158,7 @@ function NoteEditor({ note, onSave, onClose }) {
 function NoteCard({ note, onEdit, onDelete }) {
   return (
     <div
-      className="card group cursor-pointer hover:scale-[1.02] transition-all duration-200"
+      className="card cursor-pointer hover:border-accent transition-colors"
       onClick={() => onEdit(note)}
     >
       {note.is_pinned && (
@@ -176,14 +176,14 @@ function NoteCard({ note, onEdit, onDelete }) {
       {note.tags?.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
           {note.tags.map((tag) => (
-            <span key={tag.id} className="tag-pill text-xs">
+            <span key={tag.id} className="tag text-xs">
               {tag.name}
             </span>
           ))}
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t border-subtle">
+      <div className="flex items-center justify-between pt-3 border-t">
         <span className="text-xs text-tertiary">
           {new Date(note.updated_at).toLocaleDateString()} · {note.word_count}w
         </span>
@@ -192,7 +192,7 @@ function NoteCard({ note, onEdit, onDelete }) {
             e.stopPropagation()
             onDelete(note.id)
           }}
-          className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          className="btn btn-ghost btn-sm opacity-0 hover:opacity-100 transition-opacity"
         >
           🗑️
         </button>
@@ -258,12 +258,12 @@ export default function Notes() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-2">📝 Notes</h1>
-          <p className="text-secondary">Capture and organize your ideas</p>
+          <h1>📝 Notes</h1>
+          <p className="text-sm text-secondary">Capture and organize your ideas</p>
         </div>
         <button onClick={openNew} className="btn btn-primary">
           <span className="text-lg">+</span> New Note
@@ -279,10 +279,10 @@ export default function Notes() {
           <div className="space-y-1">
             <button
               onClick={() => setActiveFolder('')}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+              className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
                 activeFolder === ''
                   ? 'bg-accent/10 text-accent font-medium'
-                  : 'text-secondary hover:bg-tertiary/50'
+                  : 'text-secondary hover:bg-secondary'
               }`}
             >
               📁 All Notes
@@ -291,10 +291,10 @@ export default function Notes() {
               <button
                 key={folder}
                 onClick={() => setActiveFolder(folder)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
                   activeFolder === folder
                     ? 'bg-accent/10 text-accent font-medium'
-                    : 'text-secondary hover:bg-tertiary/50'
+                    : 'text-secondary hover:bg-secondary'
                 }`}
               >
                 📂 {folder}

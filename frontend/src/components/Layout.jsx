@@ -38,19 +38,19 @@ function Layout() {
     <div className="flex h-screen bg-primary">
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-secondary border-r border-subtle transition-all duration-300 z-sticky ${
-          sidebarOpen ? 'w-64' : 'w-20'
+        className={`fixed left-0 top-0 h-full bg-white border-r border-t z-sticky ${
+          sidebarOpen ? 'w-56' : 'w-16'
         }`}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-subtle">
+        <div className="p-4 border-b border-t">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xl font-bold shadow-glow">
+            <div className="w-8 h-8 rounded bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-sm font-bold text-white">
               L
             </div>
             {sidebarOpen && (
               <div>
-                <h1 className="font-bold text-lg">Lumina</h1>
+                <h1 className="font-bold text-sm">Lumina</h1>
                 <p className="text-xs text-tertiary">Your Second Brain</p>
               </div>
             )}
@@ -58,37 +58,30 @@ function Layout() {
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-2">
+        <nav className="p-2 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
+              className={`flex items-center gap-3 px-3 py-2 rounded transition-colors ${
                 isActive(item.path)
-                  ? 'bg-accent-light text-accent border border-accent/20'
-                  : 'text-secondary hover:bg-tertiary hover:text-primary'
+                  ? 'bg-accent/10 text-accent'
+                  : 'text-secondary hover:bg-secondary'
               }`}
             >
-              <span className="text-xl group-hover:scale-110 transition-transform">{item.icon}</span>
+              <span className="text-lg">{item.icon}</span>
               {sidebarOpen && (
-                <div className="flex-1">
-                  <div className="font-medium text-sm">{item.label}</div>
-                  {!isActive(item.path) && (
-                    <div className="text-xs text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
-                      {item.description}
-                    </div>
-                  )}
-                </div>
+                <div className="font-medium text-sm">{item.label}</div>
               )}
             </Link>
           ))}
         </nav>
 
         {/* User Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-subtle">
+        <div className="absolute bottom-0 left-0 right-0 p-2 border-t border-t">
           {sidebarOpen ? (
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-tertiary/50">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center font-bold">
+            <div className="flex items-center gap-3 p-2 rounded bg-secondary">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center font-bold text-white text-sm">
                 {user?.username?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="flex-1 min-w-0">
@@ -97,10 +90,10 @@ function Layout() {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 rounded-lg hover:bg-error/10 hover:text-error transition-colors"
+                className="p-1 rounded hover:bg-tertiary"
                 title="Logout"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
               </button>
@@ -108,10 +101,10 @@ function Layout() {
           ) : (
             <button
               onClick={handleLogout}
-              className="w-full p-3 rounded-lg hover:bg-error/10 hover:text-error transition-colors flex items-center justify-center"
+              className="w-full p-2 rounded hover:bg-tertiary flex items-center justify-center"
               title="Logout"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </button>
@@ -121,18 +114,18 @@ function Layout() {
 
       {/* Main Content */}
       <main
-        className={`flex-1 transition-all duration-300 ${
-          sidebarOpen ? 'ml-64' : 'ml-20'
+        className={`flex-1 transition-all ${
+          sidebarOpen ? 'ml-56' : 'ml-16'
         }`}
       >
         {/* Top Bar */}
-        <header className="sticky top-0 z-sticky bg-primary/80 backdrop-blur-xl border-b border-subtle">
-          <div className="flex items-center justify-between px-6 py-4">
+        <header className="sticky top-0 z-sticky bg-white border-b border-t">
+          <div className="flex items-center justify-between px-4 py-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg hover:bg-tertiary transition-colors"
+              className="p-1 rounded hover:bg-secondary"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {sidebarOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                 ) : (
@@ -142,7 +135,7 @@ function Layout() {
             </button>
 
             <div className="flex items-center gap-4">
-              <div className="text-sm text-tertiary">
+              <div className="text-xs text-tertiary">
                 {new Date().toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
