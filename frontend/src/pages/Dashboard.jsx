@@ -10,21 +10,28 @@ function StatCard({ label, value, sub, icon, color = 'accent', trend }) {
     info: 'from-info to-blue-600',
   }
 
+  const bgGradient = {
+    accent: 'bg-accent/10',
+    success: 'bg-success/10',
+    warning: 'bg-warning/10',
+    info: 'bg-accent/10',
+  }
+
   return (
-    <div className="card group hover:scale-105 transition-transform duration-300">
+    <div className="card group hover:scale-105 transition-all duration-300 hover-lift">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br opacity-20 group-hover:opacity-30 transition-opacity flex items-center justify-center text-2xl">
+        <div className={`w-14 h-14 rounded-2xl ${bgGradient[color]} bg-gradient-to-br ${colorClasses[color]} opacity-20 group-hover:opacity-30 transition-all duration-300 flex items-center justify-center text-3xl shadow-glow-sm`}>
           {icon}
         </div>
         {trend && (
-          <span className={`text-xs font-medium ${trend > 0 ? 'text-success' : 'text-error'}`}>
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${trend > 0 ? 'bg-success/10 text-success border border-success/20' : 'bg-error/10 text-error border border-error/20'}`}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
           </span>
         )}
       </div>
-      <div className="text-3xl font-bold mb-1">{value ?? '—'}</div>
-      <div className="text-sm font-medium text-secondary">{label}</div>
-      {sub && <div className="text-xs text-tertiary mt-1">{sub}</div>}
+      <div className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{value ?? '—'}</div>
+      <div className="text-sm font-semibold text-secondary">{label}</div>
+      {sub && <div className="text-xs text-tertiary mt-2">{sub}</div>}
     </div>
   )
 }
@@ -33,16 +40,16 @@ function QuickAction({ to, icon, label, description, color }) {
   return (
     <Link
       to={to}
-      className="group flex items-center gap-4 p-4 rounded-xl bg-tertiary/50 border border-subtle hover:border-accent/30 hover:bg-tertiary transition-all duration-200"
+      className="group flex items-center gap-4 p-5 rounded-2xl bg-tertiary/30 border border-primary/50 hover:border-accent/40 hover:bg-tertiary/50 transition-all duration-300 hover-lift press-effect"
     >
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-secondary/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-secondary/20 group-hover:from-accent/30 group-hover:to-secondary/30 flex items-center justify-center text-3xl group-hover:scale-110 transition-all duration-300 shadow-glow-sm">
         {icon}
       </div>
       <div className="flex-1">
-        <div className="font-medium text-sm group-hover:text-accent transition-colors">{label}</div>
-        <div className="text-xs text-tertiary">{description}</div>
+        <div className="font-semibold text-base group-hover:text-accent transition-colors">{label}</div>
+        <div className="text-sm text-tertiary mt-1">{description}</div>
       </div>
-      <svg className="w-5 h-5 text-tertiary group-hover:text-accent group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-6 h-6 text-tertiary group-hover:text-accent group-hover:translate-x-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
       </svg>
     </Link>
@@ -103,14 +110,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-fade-in">
         <div>
-          <h1>
+          <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             {greeting}, {user.username || 'User'} 👋
           </h1>
-          <p className="text-sm text-secondary">
+          <p className="text-lg text-secondary font-medium">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -122,7 +129,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
         <StatCard
           label="Habits Today"
           value={`${stats?.completed_today ?? 0}/${stats?.total_habits ?? 0}`}
@@ -157,15 +164,15 @@ export default function Dashboard() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* AI Day Plan */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
+        <div className="card animate-slide-up stagger-1 hover-lift">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-3xl animate-glow shadow-glow-sm">
                 🤖
               </div>
               <div>
-                <h3 className="font-semibold">AI Day Plan</h3>
-                <p className="text-xs text-tertiary">Personalized schedule</p>
+                <h3 className="font-bold text-xl">AI Day Plan</h3>
+                <p className="text-sm text-tertiary">Personalized schedule</p>
               </div>
             </div>
             <button
@@ -190,11 +197,11 @@ export default function Dashboard() {
           </div>
 
           {plan ? (
-            <div className="text-sm leading-relaxed whitespace-pre-wrap">{plan}</div>
+            <div className="text-sm leading-relaxed whitespace-pre-wrap bg-tertiary/30 rounded-xl p-5 border border-primary/50">{plan}</div>
           ) : (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-3">🎯</div>
-              <p className="text-secondary text-sm mb-4">
+            <div className="text-center py-12">
+              <div className="text-6xl mb-5 animate-float">🎯</div>
+              <p className="text-secondary text-base mb-6">
                 Get an AI-powered plan for today based on your habits and calendar
               </p>
             </div>
@@ -202,44 +209,44 @@ export default function Dashboard() {
         </div>
 
         {/* Upcoming Events */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
+        <div className="card animate-slide-up stagger-2 hover-lift">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-3xl shadow-glow-sm">
                 📅
               </div>
               <div>
-                <h3 className="font-semibold">Upcoming Events</h3>
-                <p className="text-xs text-tertiary">Next 5 events</p>
+                <h3 className="font-bold text-xl">Upcoming Events</h3>
+                <p className="text-sm text-tertiary">Next 5 events</p>
               </div>
             </div>
-            <Link to="/calendar" className="text-accent text-sm">
+            <Link to="/calendar" className="text-accent text-sm font-semibold hover:text-accent-light transition-colors">
               View all →
             </Link>
           </div>
 
           {upcoming.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-3">📭</div>
-              <p className="text-secondary text-sm mb-4">No upcoming events</p>
+            <div className="text-center py-12">
+              <div className="text-6xl mb-5">📭</div>
+              <p className="text-secondary text-base mb-6">No upcoming events</p>
               <Link to="/calendar" className="btn btn-secondary btn-sm">
                 Add Event
               </Link>
             </div>
           ) : (
             <div className="space-y-3">
-              {upcoming.slice(0, 5).map((event) => (
+              {upcoming.slice(0, 5).map((event, index) => (
                 <div
                   key={event.id}
-                  className="flex items-start gap-3 p-3 rounded bg-secondary"
+                  className="flex items-start gap-4 p-4 rounded-xl bg-tertiary/30 border border-primary/50 hover:border-accent/40 hover:bg-tertiary/50 transition-all duration-300 animate-slide-in stagger-${index + 1} hover-lift"
                 >
                   <div
-                    className="w-1 rounded self-stretch"
+                    className="w-2 rounded-full self-stretch shadow-glow-sm"
                     style={{ background: `var(--${event.color || 'accent'})` }}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{event.title}</div>
-                    <div className="text-xs text-tertiary mt-1">
+                    <div className="font-semibold text-base truncate">{event.title}</div>
+                    <div className="text-sm text-tertiary mt-2">
                       {new Date(event.start_datetime).toLocaleString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -255,43 +262,43 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Notes */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
+        <div className="card animate-slide-up stagger-3 hover-lift">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-3xl shadow-glow-sm">
                 📝
               </div>
               <div>
-                <h3 className="font-semibold">Recent Notes</h3>
-                <p className="text-xs text-tertiary">Latest activity</p>
+                <h3 className="font-bold text-xl">Recent Notes</h3>
+                <p className="text-sm text-tertiary">Latest activity</p>
               </div>
             </div>
-            <Link to="/notes" className="text-accent text-sm">
+            <Link to="/notes" className="text-accent text-sm font-semibold hover:text-accent-light transition-colors">
               View all →
             </Link>
           </div>
 
           {recentNotes.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-3">📄</div>
-              <p className="text-secondary text-sm mb-4">No notes yet</p>
+            <div className="text-center py-12">
+              <div className="text-6xl mb-5">📄</div>
+              <p className="text-secondary text-base mb-6">No notes yet</p>
               <Link to="/notes" className="btn btn-secondary btn-sm">
                 Create Note
               </Link>
             </div>
           ) : (
             <div className="space-y-3">
-              {recentNotes.map((note) => (
+              {recentNotes.map((note, index) => (
                 <Link
                   key={note.id}
                   to={`/notes/${note.id}`}
-                  className="block p-3 rounded bg-secondary hover:bg-tertiary transition-colors"
+                  className="block p-4 rounded-xl bg-tertiary/30 border border-primary/50 hover:border-accent/40 hover:bg-tertiary/50 transition-all duration-300 animate-slide-in stagger-${index + 1} hover-lift"
                 >
-                  <div className="font-medium text-sm truncate">{note.title}</div>
+                  <div className="font-semibold text-base truncate">{note.title}</div>
                   {note.summary && (
-                    <div className="text-xs text-tertiary mt-1 line-clamp-2">{note.summary}</div>
+                    <div className="text-sm text-tertiary mt-2 line-clamp-2">{note.summary}</div>
                   )}
-                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
                     {note.tags?.map((tag) => (
                       <span key={tag.id} className="tag text-xs">
                         {tag.name}
@@ -305,14 +312,14 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="card">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded bg-accent/10 flex items-center justify-center text-xl">
+        <div className="card animate-slide-up stagger-4 hover-lift">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-3xl shadow-glow-sm">
               ⚡
             </div>
             <div>
-              <h3 className="font-semibold">Quick Actions</h3>
-              <p className="text-xs text-tertiary">Get things done</p>
+              <h3 className="font-bold text-xl">Quick Actions</h3>
+              <p className="text-sm text-tertiary">Get things done</p>
             </div>
           </div>
 

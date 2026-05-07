@@ -56,13 +56,13 @@ function NoteEditor({ note, onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
-      <div className="bg-white border border rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4 backdrop-blur-xl">
+      <div className="bg-secondary border border-primary rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-scale-in">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-6 border-b border-primary">
           <div>
-            <h2 className="text-lg font-semibold">{note?.id ? 'Edit Note' : 'New Note'}</h2>
-            <p className="text-xs text-tertiary mt-1">Write in markdown format</p>
+            <h2 className="text-xl font-semibold">{note?.id ? 'Edit Note' : 'New Note'}</h2>
+            <p className="text-sm text-tertiary mt-1">Write in markdown format</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -96,13 +96,13 @@ function NoteEditor({ note, onSave, onClose }) {
         </div>
 
         {/* Editor */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-6 space-y-5">
           <input
             type="text"
             placeholder="Note title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-2xl font-bold bg-transparent border-none outline-none w-full placeholder:text-tertiary"
+            className="text-3xl font-bold bg-transparent border-none outline-none w-full placeholder:text-tertiary transition-all"
           />
 
           <input
@@ -110,26 +110,26 @@ function NoteEditor({ note, onSave, onClose }) {
             placeholder="Folder (optional)"
             value={folder}
             onChange={(e) => setFolder(e.target.value)}
-            className="w-full"
+            className="w-full transition-all"
           />
 
           <textarea
             placeholder="Write your note here... (Markdown supported)"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[400px] resize-y font-mono text-sm leading-relaxed"
+            className="w-full min-h-[400px] resize-y font-mono text-sm leading-relaxed transition-all"
           />
 
           {summary && (
-            <div className="p-4 rounded bg-accent/10 border border-accent/20">
-              <div className="text-xs font-semibold text-accent mb-2">✨ AI SUMMARY</div>
+            <div className="p-5 rounded-xl bg-accent/10 border border-accent/20 animate-fade-in">
+              <div className="text-sm font-semibold text-accent mb-3">✨ AI SUMMARY</div>
               <div className="text-sm leading-relaxed">{summary}</div>
             </div>
           )}
 
           {tagSuggestions.length > 0 && (
-            <div>
-              <div className="text-xs text-tertiary mb-2">🏷️ Suggested tags:</div>
+            <div className="animate-fade-in">
+              <div className="text-sm text-tertiary mb-3 font-medium">🏷️ Suggested tags:</div>
               <div className="flex flex-wrap gap-2">
                 {tagSuggestions.map((tag) => (
                   <span key={tag} className="tag">
@@ -141,8 +141,8 @@ function NoteEditor({ note, onSave, onClose }) {
           )}
 
           {aiLoading && (
-            <div className="flex items-center gap-2 text-sm text-accent">
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 text-sm text-accent">
+              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -158,23 +158,23 @@ function NoteEditor({ note, onSave, onClose }) {
 function NoteCard({ note, onEdit, onDelete }) {
   return (
     <div
-      className="card cursor-pointer hover:border-accent transition-colors"
+      className="card cursor-pointer hover:border-accent/40 transition-all duration-300 group animate-slide-in hover-lift"
       onClick={() => onEdit(note)}
     >
       {note.is_pinned && (
-        <div className="absolute top-4 right-4 text-lg">📌</div>
+        <div className="absolute top-4 right-4 text-2xl animate-float">📌</div>
       )}
 
-      <h3 className="font-semibold text-base mb-2 pr-6 line-clamp-2">{note.title}</h3>
+      <h3 className="font-bold text-xl mb-3 pr-8 line-clamp-2">{note.title}</h3>
 
       {note.summary && (
-        <p className="text-sm text-secondary leading-relaxed mb-3 line-clamp-3">
+        <p className="text-sm text-secondary leading-relaxed mb-4 line-clamp-3">
           {note.summary}
         </p>
       )}
 
       {note.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 mb-4">
           {note.tags.map((tag) => (
             <span key={tag.id} className="tag text-xs">
               {tag.name}
@@ -183,8 +183,8 @@ function NoteCard({ note, onEdit, onDelete }) {
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t">
-        <span className="text-xs text-tertiary">
+      <div className="flex items-center justify-between pt-4 border-t border-primary/50">
+        <span className="text-sm text-tertiary font-semibold">
           {new Date(note.updated_at).toLocaleDateString()} · {note.word_count}w
         </span>
         <button
@@ -192,7 +192,7 @@ function NoteCard({ note, onEdit, onDelete }) {
             e.stopPropagation()
             onDelete(note.id)
           }}
-          className="btn btn-ghost btn-sm opacity-0 hover:opacity-100 transition-opacity"
+          className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
         >
           🗑️
         </button>
@@ -258,31 +258,31 @@ export default function Notes() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-fade-in">
         <div>
-          <h1>📝 Notes</h1>
-          <p className="text-sm text-secondary">Capture and organize your ideas</p>
+          <h1 className="text-5xl font-bold mb-3">📝 Notes</h1>
+          <p className="text-lg text-secondary font-medium">Capture and organize your ideas</p>
         </div>
         <button onClick={openNew} className="btn btn-primary">
-          <span className="text-lg">+</span> New Note
+          <span className="text-2xl">+</span> New Note
         </button>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex gap-8">
         {/* Sidebar */}
-        <div className="w-48 flex-shrink-0">
-          <div className="text-xs font-semibold text-tertiary mb-3 tracking-wider">
-            FOLDERS
+        <div className="w-64 flex-shrink-0 animate-slide-in">
+          <div className="text-xs font-bold text-tertiary mb-4 tracking-wider uppercase">
+            Folders
           </div>
-          <div className="space-y-1">
+          <div className="space-y-2">
             <button
               onClick={() => setActiveFolder('')}
-              className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
+              className={`w-full text-left px-5 py-4 rounded-xl text-sm transition-all duration-300 ${
                 activeFolder === ''
-                  ? 'bg-accent/10 text-accent font-medium'
-                  : 'text-secondary hover:bg-secondary'
+                  ? 'bg-accent/10 text-accent font-semibold border border-accent/20 shadow-glow-sm'
+                  : 'text-secondary hover:bg-tertiary/50'
               }`}
             >
               📁 All Notes
@@ -291,10 +291,10 @@ export default function Notes() {
               <button
                 key={folder}
                 onClick={() => setActiveFolder(folder)}
-                className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
+                className={`w-full text-left px-5 py-4 rounded-xl text-sm transition-all duration-300 ${
                   activeFolder === folder
-                    ? 'bg-accent/10 text-accent font-medium'
-                    : 'text-secondary hover:bg-secondary'
+                    ? 'bg-accent/10 text-accent font-semibold border border-accent/20 shadow-glow-sm'
+                    : 'text-secondary hover:bg-tertiary/50'
                 }`}
               >
                 📂 {folder}
@@ -304,18 +304,18 @@ export default function Notes() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
           {/* Search */}
-          <div className="relative">
+          <div className="relative animate-slide-in stagger-1">
             <input
               type="text"
               placeholder="Search notes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-14 transition-all duration-200"
             />
             <svg
-              className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-tertiary"
+              className="w-6 h-6 absolute left-5 top-1/2 -translate-y-1/2 text-tertiary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -332,12 +332,12 @@ export default function Notes() {
           {/* Notes Grid */}
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
+              <div className="animate-spin w-12 h-12 border-3 border-accent border-t-transparent rounded-full" />
             </div>
           ) : notes.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-3">📭</div>
-              <p className="text-secondary mb-4">
+            <div className="card text-center py-20 animate-fade-in">
+              <div className="text-7xl mb-6">📭</div>
+              <p className="text-secondary text-lg mb-8">
                 {search
                   ? 'No notes match your search.'
                   : 'No notes yet. Create your first one!'}
@@ -349,8 +349,8 @@ export default function Notes() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {notes.map((note) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {notes.map((note, index) => (
                 <NoteCard
                   key={note.id}
                   note={note}
