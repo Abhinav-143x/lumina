@@ -48,15 +48,31 @@ function EventForm({ date, event, onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
-      <div className="bg-secondary border border-primary rounded-lg w-full max-w-md p-6">
-        <h2 className="text-xl font-semibold mb-6">
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0, 0, 0, 0.6)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem'
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '0.5rem',
+        width: '100%',
+        maxWidth: '28rem',
+        padding: '1.5rem'
+      }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>
           {event?.id ? 'Edit Event' : 'New Event'}
         </h2>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Title *
             </label>
             <input
@@ -67,9 +83,9 @@ function EventForm({ date, event, onSave, onClose }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Start
               </label>
               <input
@@ -79,7 +95,7 @@ function EventForm({ date, event, onSave, onClose }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 End
               </label>
               <input
@@ -91,7 +107,7 @@ function EventForm({ date, event, onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Location
             </label>
             <input
@@ -103,46 +119,50 @@ function EventForm({ date, event, onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Color
             </label>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               {Object.entries(COLOR_MAP).map(([name, hex]) => (
                 <button
                   key={name}
                   onClick={() => handleChange('color')(name)}
-                  className={`w-8 h-8 rounded-full border-2 ${
-                    data.color === name
-                      ? 'border-white'
-                      : 'border-transparent'
-                  }`}
-                  style={{ background: hex }}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    border: '2px solid',
+                    background: hex,
+                    borderColor: data.color === name ? 'white' : 'transparent',
+                    cursor: 'pointer'
+                  }}
                 />
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Description
             </label>
             <textarea
               placeholder="Optional notes"
               value={data.description}
               onChange={(e) => handleChange('description')(e.target.value)}
-              className="min-h-[100px]"
+              style={{ minHeight: '100px' }}
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div style={{ display: 'flex', gap: '0.75rem', paddingTop: '1rem' }}>
             <button
               onClick={save}
               disabled={saving}
-              className="btn btn-primary flex-1"
+              className="btn-primary"
+              style={{ flex: 1 }}
             >
               {saving ? 'Saving...' : 'Save Event'}
             </button>
-            <button onClick={onClose} className="btn btn-ghost">
+            <button onClick={onClose} className="btn-ghost">
               Cancel
             </button>
           </div>
@@ -218,21 +238,21 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h1>📅 Calendar</h1>
-          <p className="text-sm text-secondary">Schedule and manage your events</p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>Schedule and manage your events</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={prevMonth} className="btn btn-sm btn-ghost">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button onClick={prevMonth} className="btn-ghost" style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}>
             ←
           </button>
-          <span className="text-base font-semibold min-w-[180px] text-center">
+          <span style={{ fontSize: '1rem', fontWeight: '500', minWidth: '180px', textAlign: 'center' }}>
             {monthName}
           </span>
-          <button onClick={nextMonth} className="btn btn-sm btn-ghost">
+          <button onClick={nextMonth} className="btn-ghost" style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}>
             →
           </button>
           <button
@@ -241,21 +261,28 @@ export default function CalendarPage() {
               setSelectedDate(null)
               setShowForm(true)
             }}
-            className="btn btn-primary"
+            className="btn-primary"
           >
-            <span className="text-xl">+</span> Event
+            <span style={{ fontSize: '1.25rem' }}>+</span> Event
           </button>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="card overflow-hidden">
+      <div className="card" style={{ overflow: 'hidden' }}>
         {/* Day headers */}
-        <div className="grid grid-cols-7 border-b border-primary">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border-color)' }}>
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div
               key={day}
-              className="py-3 text-center text-sm font-semibold text-tertiary uppercase"
+              style={{
+                padding: '0.75rem',
+                textAlign: 'center',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: 'var(--text-muted)',
+                textTransform: 'uppercase'
+              }}
             >
               {day}
             </div>
@@ -263,12 +290,18 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar grid */}
-        <div className="grid grid-cols-7">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
           {/* Empty cells before first day */}
           {Array.from({ length: firstDay }).map((_, i) => (
             <div
               key={`empty-${i}`}
-              className="min-h-[100px] border-r border-b border-primary bg-tertiary/30 opacity-40"
+              style={{
+                minHeight: '100px',
+                borderRight: '1px solid var(--border-color)',
+                borderBottom: '1px solid var(--border-color)',
+                background: 'rgba(51, 65, 85, 0.3)',
+                opacity: 0.4
+              }}
             />
           ))}
 
@@ -279,21 +312,41 @@ export default function CalendarPage() {
             return (
               <div
                 key={day}
-                className={`min-h-[100px] p-2 border-r border-b border-primary cursor-pointer transition-colors ${
-                  today ? 'bg-accent/10' : 'hover:bg-tertiary/30'
-                }`}
+                style={{
+                  minHeight: '100px',
+                  padding: '0.5rem',
+                  borderRight: '1px solid var(--border-color)',
+                  borderBottom: '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  background: today ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                  transition: 'background 0.15s ease'
+                }}
                 onClick={() => dayClick(day)}
+                onMouseEnter={(e) => {
+                  if (!today) e.currentTarget.style.background = 'rgba(51, 65, 85, 0.3)'
+                }}
+                onMouseLeave={(e) => {
+                  if (!today) e.currentTarget.style.background = 'transparent'
+                }}
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm mb-2 ${
-                    today
-                      ? 'bg-primary text-white font-semibold'
-                      : 'text-primary hover:bg-tertiary/50'
-                  }`}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    marginBottom: '0.5rem',
+                    background: today ? 'var(--primary)' : 'transparent',
+                    color: today ? 'white' : 'var(--text-primary)',
+                    fontWeight: today ? '500' : '400'
+                  }}
                 >
                   {day}
                 </div>
-                <div className="space-y-1">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                   {dayEvents.slice(0, 3).map((e) => (
                     <div
                       key={e.id}
@@ -302,18 +355,24 @@ export default function CalendarPage() {
                         setEditing(e)
                         setShowForm(true)
                       }}
-                      className="text-xs px-2 py-1 rounded truncate border-l-2"
                       style={{
+                        fontSize: '0.75rem',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.25rem',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        borderLeft: '2px solid',
                         background: (COLOR_MAP[e.color] || 'var(--primary)') + '20',
                         color: COLOR_MAP[e.color] || 'var(--primary)',
-                        borderColor: COLOR_MAP[e.color] || 'var(--primary)',
+                        borderColor: COLOR_MAP[e.color] || 'var(--primary)'
                       }}
                     >
                       {e.title}
                     </div>
                   ))}
                   {dayEvents.length > 3 && (
-                    <div className="text-xs text-tertiary">
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                       +{dayEvents.length - 3} more
                     </div>
                   )}

@@ -56,39 +56,68 @@ function NoteEditor({ note, onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
-      <div className="bg-secondary border border-primary rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0, 0, 0, 0.6)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem'
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '0.5rem',
+        width: '100%',
+        maxWidth: '48rem',
+        maxHeight: '90vh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-primary">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1.5rem',
+          borderBottom: '1px solid var(--border-color)'
+        }}>
           <div>
             <h2>{note?.id ? 'Edit Note' : 'New Note'}</h2>
-            <p className="text-sm text-tertiary mt-1">Write in markdown format</p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>Write in markdown format</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <button
               onClick={suggestTags}
               disabled={aiLoading}
-              className="btn btn-sm btn-ghost"
+              className="btn-ghost"
+              style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}
             >
               🤖 Suggest Tags
             </button>
             <button
               onClick={summarise}
               disabled={aiLoading}
-              className="btn btn-sm btn-ghost"
+              className="btn-ghost"
+              style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}
             >
               ✨ Summarise
             </button>
             <button
               onClick={save}
               disabled={saving}
-              className="btn btn-sm btn-primary"
+              className="btn-primary"
+              style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}
             >
               {saving ? 'Saving...' : 'Save'}
             </button>
             <button
               onClick={onClose}
-              className="btn btn-sm btn-ghost"
+              className="btn-ghost"
+              style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}
             >
               ✕
             </button>
@@ -96,13 +125,20 @@ function NoteEditor({ note, onSave, onClose }) {
         </div>
 
         {/* Editor */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div style={{ flex: 1, overflow: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <input
             type="text"
             placeholder="Note title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-2xl font-bold bg-transparent border-none outline-none w-full"
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              width: '100%'
+            }}
           />
 
           <input
@@ -116,22 +152,40 @@ function NoteEditor({ note, onSave, onClose }) {
             placeholder="Write your note here... (Markdown supported)"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[400px] resize-y font-mono text-sm"
+            style={{
+              width: '100%',
+              minHeight: '400px',
+              resize: 'vertical',
+              fontFamily: 'monospace',
+              fontSize: '0.875rem'
+            }}
           />
 
           {summary && (
-            <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-              <div className="text-sm font-semibold text-primary mb-2">✨ AI SUMMARY</div>
-              <div className="text-sm">{summary}</div>
+            <div style={{
+              padding: '1rem',
+              borderRadius: '0.375rem',
+              background: 'rgba(99, 102, 241, 0.1)',
+              border: '1px solid rgba(99, 102, 241, 0.2)'
+            }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--primary)', marginBottom: '0.5rem' }}>✨ AI SUMMARY</div>
+              <div style={{ fontSize: '0.875rem' }}>{summary}</div>
             </div>
           )}
 
           {tagSuggestions.length > 0 && (
             <div>
-              <div className="text-sm text-tertiary mb-2">🏷️ Suggested tags:</div>
-              <div className="flex flex-wrap gap-2">
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>🏷️ Suggested tags:</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {tagSuggestions.map((tag) => (
-                  <span key={tag} className="tag">
+                  <span key={tag} style={{
+                    fontSize: '0.75rem',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    color: 'var(--primary)',
+                    padding: '0.125rem 0.5rem',
+                    borderRadius: '0.25rem',
+                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                  }}>
                     {tag}
                   </span>
                 ))}
@@ -140,8 +194,8 @@ function NoteEditor({ note, onSave, onClose }) {
           )}
 
           {aiLoading && (
-            <div className="flex items-center gap-2 text-sm text-primary">
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--primary)' }}>
+              <svg style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -157,33 +211,66 @@ function NoteEditor({ note, onSave, onClose }) {
 function NoteCard({ note, onEdit, onDelete }) {
   return (
     <div
-      className="card cursor-pointer hover:border-accent/30 transition-colors"
+      className="card"
+      style={{ cursor: 'pointer', position: 'relative' }}
       onClick={() => onEdit(note)}
     >
       {note.is_pinned && (
-        <div className="absolute top-4 right-4 text-xl">📌</div>
+        <div style={{ position: 'absolute', top: '1rem', right: '1rem', fontSize: '1.25rem' }}>📌</div>
       )}
 
-      <h3 className="font-semibold text-lg mb-3 pr-8 line-clamp-2">{note.title}</h3>
+      <h3 style={{
+        fontSize: '1.125rem',
+        fontWeight: '600',
+        marginBottom: '0.75rem',
+        paddingRight: '2rem',
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden'
+      }}>
+        {note.title}
+      </h3>
 
       {note.summary && (
-        <p className="text-sm text-secondary mb-4 line-clamp-3">
+        <p style={{
+          fontSize: '0.875rem',
+          color: 'var(--text-secondary)',
+          marginBottom: '1rem',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
           {note.summary}
         </p>
       )}
 
       {note.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
           {note.tags.map((tag) => (
-            <span key={tag.id} className="tag text-xs">
+            <span key={tag.id} style={{
+              fontSize: '0.75rem',
+              background: 'rgba(99, 102, 241, 0.1)',
+              color: 'var(--primary)',
+              padding: '0.125rem 0.5rem',
+              borderRadius: '0.25rem',
+              border: '1px solid rgba(99, 102, 241, 0.2)'
+            }}>
               {tag.name}
             </span>
           ))}
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-4 border-t border-primary">
-        <span className="text-sm text-tertiary">
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingTop: '1rem',
+        borderTop: '1px solid var(--border-color)'
+      }}>
+        <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
           {new Date(note.updated_at).toLocaleDateString()} · {note.word_count}w
         </span>
         <button
@@ -191,7 +278,10 @@ function NoteCard({ note, onEdit, onDelete }) {
             e.stopPropagation()
             onDelete(note.id)
           }}
-          className="btn btn-sm btn-ghost opacity-0 group-hover:opacity-100"
+          className="btn-ghost"
+          style={{ fontSize: '0.75rem', padding: '0.375rem 0.5rem', opacity: 0 }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
         >
           🗑️
         </button>
@@ -257,32 +347,39 @@ export default function Notes() {
   }
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h1>📝 Notes</h1>
-          <p className="text-sm text-secondary">Capture and organize your ideas</p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>Capture and organize your ideas</p>
         </div>
-        <button onClick={openNew} className="btn btn-primary">
-          <span className="text-xl">+</span> New Note
+        <button onClick={openNew} className="btn-primary">
+          <span style={{ fontSize: '1.25rem' }}>+</span> New Note
         </button>
       </div>
 
-      <div className="flex gap-6">
+      <div style={{ display: 'flex', gap: '1.5rem' }}>
         {/* Sidebar */}
-        <div className="w-56 flex-shrink-0">
-          <div className="text-xs font-semibold text-tertiary mb-3 tracking-wider uppercase">
+        <div style={{ width: '224px', flexShrink: 0 }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Folders
           </div>
-          <div className="space-y-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <button
               onClick={() => setActiveFolder('')}
-              className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
-                activeFolder === ''
-                  ? 'bg-accent/10 text-primary border border-accent/20'
-                  : 'text-secondary hover:bg-tertiary/50'
-              }`}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                background: activeFolder === '' ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                color: activeFolder === '' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                border: activeFolder === '' ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid transparent',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
             >
               📁 All Notes
             </button>
@@ -290,11 +387,18 @@ export default function Notes() {
               <button
                 key={folder}
                 onClick={() => setActiveFolder(folder)}
-                className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
-                  activeFolder === folder
-                    ? 'bg-accent/10 text-primary border border-accent/20'
-                    : 'text-secondary hover:bg-tertiary/50'
-                }`}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.875rem',
+                  background: activeFolder === folder ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                  color: activeFolder === folder ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  border: activeFolder === folder ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
               >
                 📂 {folder}
               </button>
@@ -303,18 +407,18 @@ export default function Notes() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-4">
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Search */}
-          <div className="relative">
+          <div style={{ position: 'relative' }}>
             <input
               type="text"
               placeholder="Search notes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              style={{ paddingLeft: '2.5rem' }}
             />
             <svg
-              className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-tertiary"
+              style={{ width: '20px', height: '20px', position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -330,28 +434,36 @@ export default function Notes() {
 
           {/* Notes Grid */}
           {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-                <div className="text-secondary">Loading...</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '2px solid var(--primary)',
+                  borderTop: 'transparent',
+                  borderRadius: '50%',
+                  margin: '0 auto 1rem',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>
               </div>
             </div>
           ) : notes.length === 0 ? (
-            <div className="card text-center py-12">
-              <div className="text-5xl mb-4">📭</div>
-              <p className="text-secondary mb-6">
+            <div className="card" style={{ textAlign: 'center', padding: '3rem 0' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                 {search
                   ? 'No notes match your search.'
                   : 'No notes yet. Create your first one!'}
               </p>
               {!search && (
-                <button onClick={openNew} className="btn btn-secondary">
+                <button onClick={openNew} className="btn-secondary">
                   Create Note
                 </button>
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
               {notes.map((note) => (
                 <NoteCard
                   key={note.id}

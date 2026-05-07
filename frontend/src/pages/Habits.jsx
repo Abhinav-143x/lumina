@@ -36,13 +36,29 @@ function HabitForm({ onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
-      <div className="bg-secondary border border-primary rounded-lg w-full max-w-md p-6">
-        <h2 className="text-xl font-semibold mb-6">New Habit</h2>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0, 0, 0, 0.6)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem'
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '0.5rem',
+        width: '100%',
+        maxWidth: '28rem',
+        padding: '1.5rem'
+      }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>New Habit</h2>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Name *
             </label>
             <input
@@ -54,19 +70,24 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Icon
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {ICONS.map((icon) => (
                 <button
                   key={icon}
                   onClick={() => handleChange('icon')(icon)}
-                  className={`w-10 h-10 rounded-lg border-2 text-xl ${
-                    data.icon === icon
-                      ? 'border-primary bg-accent/10'
-                      : 'border-primary hover:border-accent/30'
-                  }`}
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '0.375rem',
+                    border: '2px solid',
+                    fontSize: '1.25rem',
+                    background: data.icon === icon ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                    borderColor: data.icon === icon ? 'var(--primary)' : 'var(--border-color)',
+                    cursor: 'pointer'
+                  }}
                 >
                   {icon}
                 </button>
@@ -75,27 +96,30 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Color
             </label>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               {COLORS.map((color) => (
                 <button
                   key={color}
                   onClick={() => handleChange('color')(color)}
-                  className={`w-8 h-8 rounded-full border-2 ${
-                    data.color === color
-                      ? 'border-white'
-                      : 'border-transparent'
-                  }`}
-                  style={{ background: color }}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    border: '2px solid',
+                    background: color,
+                    borderColor: data.color === color ? 'white' : 'transparent',
+                    cursor: 'pointer'
+                  }}
                 />
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Category
             </label>
             <select
@@ -111,7 +135,7 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Frequency
             </label>
             <select
@@ -124,15 +148,16 @@ function HabitForm({ onSave, onClose }) {
             </select>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div style={{ display: 'flex', gap: '0.75rem', paddingTop: '1rem' }}>
             <button
               onClick={save}
               disabled={saving}
-              className="btn btn-primary flex-1"
+              className="btn-primary"
+              style={{ flex: 1 }}
             >
               {saving ? 'Saving...' : 'Create Habit'}
             </button>
-            <button onClick={onClose} className="btn btn-ghost">
+            <button onClick={onClose} className="btn-ghost">
               Cancel
             </button>
           </div>
@@ -156,37 +181,42 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
 
   const streakColor =
     habit.streak?.current >= 7
-      ? 'text-success'
+      ? 'var(--success)'
       : habit.streak?.current >= 3
-      ? 'text-warning'
-      : 'text-tertiary'
+      ? 'var(--warning)'
+      : 'var(--text-muted)'
 
   return (
     <div className="card">
-      <div className="flex items-center gap-4">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {/* Check button */}
         <button
           onClick={checkIn}
           disabled={checking}
-          className={`w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center text-2xl transition-colors ${
-            habit.completed_today
-              ? 'bg-opacity-20 border-2'
-              : 'border-2 hover:border-accent/30'
-          }`}
           style={{
-            borderColor: habit.completed_today ? habit.color : 'var(--border-primary)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '0.375rem',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5rem',
+            border: '2px solid',
             background: habit.completed_today ? habit.color : 'transparent',
+            borderColor: habit.completed_today ? habit.color : 'var(--border-color)',
+            cursor: 'pointer'
           }}
         >
           {habit.completed_today ? '✓' : habit.icon}
         </button>
 
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg">{habit.name}</h3>
-          <div className="flex items-center gap-2 text-sm text-tertiary mt-1 flex-wrap">
-            <span className="capitalize">{habit.category}</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>{habit.name}</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+            <span style={{ textTransform: 'capitalize' }}>{habit.category}</span>
             <span>·</span>
-            <span className={streakColor}>
+            <span style={{ color: streakColor }}>
               🔥 {habit.streak?.current ?? 0} day streak
             </span>
             <span>·</span>
@@ -194,13 +224,16 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Link to={`/habits/${habit.id}`} className="btn btn-sm btn-ghost">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Link to={`/habits/${habit.id}`} className="btn-ghost" style={{ fontSize: '0.75rem', padding: '0.375rem 0.75rem' }}>
             Analytics
           </Link>
           <button
             onClick={() => onDelete(habit.id)}
-            className="btn btn-sm btn-ghost opacity-0 group-hover:opacity-100"
+            className="btn-ghost"
+            style={{ fontSize: '0.75rem', padding: '0.375rem 0.5rem', opacity: 0 }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
           >
             🗑️
           </button>
@@ -261,24 +294,24 @@ export default function Habits() {
   const completedToday = habits.filter((h) => h.completed_today).length
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h1>✅ Habits</h1>
-          <p className="text-sm text-secondary">
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0 0' }}>
             {completedToday}/{habits.length} done today
           </p>
         </div>
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button
             onClick={getAiReport}
             disabled={reportLoading}
-            className="btn btn-ghost"
+            className="btn-ghost"
           >
             {reportLoading ? (
               <>
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -290,37 +323,40 @@ export default function Habits() {
           </button>
           <button
             onClick={() => setShowForm(true)}
-            className="btn btn-primary"
+            className="btn-primary"
           >
-            <span className="text-xl">+</span> New Habit
+            <span style={{ fontSize: '1.25rem' }}>+</span> New Habit
           </button>
         </div>
       </div>
 
       {/* AI Report */}
       {aiReport && (
-        <div className="card bg-accent/5 border-accent/20">
-          <div className="text-sm font-semibold text-primary mb-2">
+        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+          <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--primary)', marginBottom: '0.5rem' }}>
             🤖 AI WEEKLY INSIGHT
           </div>
-          <div className="text-sm">{aiReport}</div>
+          <div style={{ fontSize: '0.875rem' }}>{aiReport}</div>
         </div>
       )}
 
       {/* Progress Card */}
       {habits.length > 0 && (
         <div className="card">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-secondary">Today's progress</span>
-            <span className="text-sm font-semibold">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Today's progress</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
               {completedToday}/{habits.length}
             </span>
           </div>
-          <div className="h-2 bg-tertiary rounded-full overflow-hidden">
+          <div style={{ height: '8px', background: 'var(--bg-tertiary)', borderRadius: '4px', overflow: 'hidden' }}>
             <div
-              className="h-full bg-success rounded-full transition-all duration-300"
               style={{
-                width: `${habits.length ? (completedToday / habits.length) * 100 : 0}%`,
+                height: '100%',
+                background: 'var(--success)',
+                borderRadius: '4px',
+                transition: 'all 0.3s ease',
+                width: `${habits.length ? (completedToday / habits.length) * 100 : 0}%`
               }}
             />
           </div>
@@ -329,28 +365,36 @@ export default function Habits() {
 
       {/* Habits List */}
       {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-            <div className="text-secondary">Loading...</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              border: '2px solid var(--primary)',
+              borderTop: 'transparent',
+              borderRadius: '50%',
+              margin: '0 auto 1rem',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>
           </div>
         </div>
       ) : habits.length === 0 ? (
-        <div className="card text-center py-12">
-          <div className="text-5xl mb-4">🎯</div>
-          <h3 className="font-semibold text-lg mb-3">No habits yet</h3>
-          <p className="text-secondary mb-6">
+        <div className="card" style={{ textAlign: 'center', padding: '3rem 0' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.75rem' }}>No habits yet</h3>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
             Start building your first habit to track progress.
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="btn btn-primary"
+            className="btn-primary"
           >
             Create first habit
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {habits.map((habit) => (
             <HabitCard
               key={habit.id}

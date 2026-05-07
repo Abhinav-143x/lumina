@@ -62,28 +62,52 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
-      <div className="w-full max-w-md">
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'var(--bg-primary)',
+      padding: '1rem'
+    }}>
+      <div style={{ width: '100%', maxWidth: '28rem' }}>
         {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-primary mb-4">
-            <span className="text-3xl font-bold text-white">L</span>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '64px',
+            height: '64px',
+            borderRadius: '0.5rem',
+            background: 'var(--primary)',
+            marginBottom: '1rem'
+          }}>
+            <span style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>L</span>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Create your account</h1>
-          <p className="text-sm text-secondary">Start building your second brain</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Create your account</h1>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Start building your second brain</p>
         </div>
 
         {/* Register Form */}
         <div className="card">
           {error && (
-            <div className="mb-4 p-3 rounded bg-error/10 border border-error/20 text-error text-sm">
+            <div style={{
+              marginBottom: '1rem',
+              padding: '0.75rem',
+              borderRadius: '0.375rem',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              color: 'var(--error)',
+              fontSize: '0.875rem'
+            }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Username
               </label>
               <input
@@ -97,7 +121,7 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Email
               </label>
               <input
@@ -110,12 +134,12 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Password
               </label>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="•••••••••"
                 value={data.password}
                 onChange={handleChange('password')}
                 required
@@ -124,12 +148,12 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Confirm Password
               </label>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="•••••••••"
                 value={data.confirmPassword}
                 onChange={handleChange('confirmPassword')}
                 required
@@ -140,11 +164,12 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full"
+              className="btn-primary"
+              style={{ width: '100%' }}
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <svg style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
@@ -156,27 +181,42 @@ export default function Register() {
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-secondary">
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
-            <Link to="/login" className="text-primary font-medium">
+            <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '500' }}>
               Sign in
             </Link>
           </div>
         </div>
 
         {/* Features */}
-        <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-          <div className="p-4 rounded-lg bg-tertiary/30 border border-primary/50">
-            <div className="text-2xl mb-2">📝</div>
-            <div className="text-xs text-tertiary">Smart Notes</div>
+        <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', textAlign: 'center' }}>
+          <div style={{
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            background: 'rgba(51, 65, 85, 0.3)',
+            border: '1px solid var(--border-color)'
+          }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📝</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Smart Notes</div>
           </div>
-          <div className="p-4 rounded-lg bg-tertiary/30 border border-primary/50">
-            <div className="text-2xl mb-2">✅</div>
-            <div className="text-xs text-tertiary">Habit Tracking</div>
+          <div style={{
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            background: 'rgba(51, 65, 85, 0.3)',
+            border: '1px solid var(--border-color)'
+          }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✅</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Habit Tracking</div>
           </div>
-          <div className="p-4 rounded-lg bg-tertiary/30 border border-primary/50">
-            <div className="text-2xl mb-2">🤖</div>
-            <div className="text-xs text-tertiary">AI Assistant</div>
+          <div style={{
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            background: 'rgba(51, 65, 85, 0.3)',
+            border: '1px solid var(--border-color)'
+          }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>AI Assistant</div>
           </div>
         </div>
       </div>
