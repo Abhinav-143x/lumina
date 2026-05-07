@@ -36,13 +36,13 @@ function HabitForm({ onSave, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4 backdrop-blur-xl">
-      <div className="bg-secondary border border-primary rounded-2xl w-full max-w-md p-8 shadow-2xl animate-scale-in">
-        <h2 className="text-2xl font-semibold mb-8">New Habit</h2>
+    <div className="fixed inset-0 bg-black/60 z-modal flex items-center justify-center p-4">
+      <div className="bg-secondary border border-primary rounded-lg w-full max-w-md p-6">
+        <h2 className="text-xl font-semibold mb-6">New Habit</h2>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block text-sm font-medium text-secondary mb-2">
               Name *
             </label>
             <input
@@ -50,23 +50,22 @@ function HabitForm({ onSave, onClose }) {
               placeholder="e.g. Morning run"
               value={data.name}
               onChange={(e) => handleChange('name')(e.target.value)}
-              className="transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block text-sm font-medium text-secondary mb-2">
               Icon
             </label>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               {ICONS.map((icon) => (
                 <button
                   key={icon}
                   onClick={() => handleChange('icon')(icon)}
-                  className={`w-12 h-12 rounded-xl border-2 text-2xl transition-all duration-200 ${
+                  className={`w-10 h-10 rounded-lg border-2 text-xl ${
                     data.icon === icon
-                      ? 'border-accent bg-accent/10 shadow-glow'
-                      : 'border-primary hover:border-accent hover:scale-110'
+                      ? 'border-primary bg-accent/10'
+                      : 'border-primary hover:border-accent/30'
                   }`}
                 >
                   {icon}
@@ -76,18 +75,18 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block text-sm font-medium text-secondary mb-2">
               Color
             </label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               {COLORS.map((color) => (
                 <button
                   key={color}
                   onClick={() => handleChange('color')(color)}
-                  className={`w-10 h-10 rounded-full border-2 transition-all duration-200 ${
+                  className={`w-8 h-8 rounded-full border-2 ${
                     data.color === color
-                      ? 'border-white scale-110 shadow-glow'
-                      : 'border-transparent hover:scale-110'
+                      ? 'border-white'
+                      : 'border-transparent'
                   }`}
                   style={{ background: color }}
                 />
@@ -96,13 +95,12 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block text-sm font-medium text-secondary mb-2">
               Category
             </label>
             <select
               value={data.category}
               onChange={(e) => handleChange('category')(e.target.value)}
-              className="transition-all duration-200"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -113,13 +111,12 @@ function HabitForm({ onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-secondary mb-3">
+            <label className="block text-sm font-medium text-secondary mb-2">
               Frequency
             </label>
             <select
               value={data.frequency}
               onChange={(e) => handleChange('frequency')(e.target.value)}
-              className="transition-all duration-200"
             >
               <option value="daily">Daily</option>
               <option value="weekdays">Weekdays only</option>
@@ -127,7 +124,7 @@ function HabitForm({ onSave, onClose }) {
             </select>
           </div>
 
-          <div className="flex gap-4 pt-6">
+          <div className="flex gap-3 pt-4">
             <button
               onClick={save}
               disabled={saving}
@@ -165,16 +162,16 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
       : 'text-tertiary'
 
   return (
-    <div className="card group animate-slide-in hover-lift">
-      <div className="flex items-center gap-5">
+    <div className="card">
+      <div className="flex items-center gap-4">
         {/* Check button */}
         <button
           onClick={checkIn}
           disabled={checking}
-          className={`w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center text-4xl transition-all duration-300 ${
+          className={`w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center text-2xl transition-colors ${
             habit.completed_today
-              ? 'bg-opacity-20 border-3 shadow-glow'
-              : 'border-2 hover:border-accent hover:scale-110'
+              ? 'bg-opacity-20 border-2'
+              : 'border-2 hover:border-accent/30'
           }`}
           style={{
             borderColor: habit.completed_today ? habit.color : 'var(--border-primary)',
@@ -185,9 +182,9 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
         </button>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-xl">{habit.name}</h3>
-          <div className="flex items-center gap-3 text-sm text-tertiary mt-2 flex-wrap">
-            <span className="capitalize font-semibold">{habit.category}</span>
+          <h3 className="font-semibold text-lg">{habit.name}</h3>
+          <div className="flex items-center gap-2 text-sm text-tertiary mt-1 flex-wrap">
+            <span className="capitalize">{habit.category}</span>
             <span>·</span>
             <span className={streakColor}>
               🔥 {habit.streak?.current ?? 0} day streak
@@ -197,13 +194,13 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link to={`/habits/${habit.id}`} className="btn btn-ghost btn-sm">
+        <div className="flex items-center gap-2">
+          <Link to={`/habits/${habit.id}`} className="btn btn-sm btn-ghost">
             Analytics
           </Link>
           <button
             onClick={() => onDelete(habit.id)}
-            className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+            className="btn btn-sm btn-ghost opacity-0 group-hover:opacity-100"
           >
             🗑️
           </button>
@@ -264,16 +261,16 @@ export default function Habits() {
   const completedToday = habits.filter((h) => h.completed_today).length
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between animate-fade-in">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-5xl font-bold mb-3">✅ Habits</h1>
-          <p className="text-lg text-secondary font-medium">
+          <h1>✅ Habits</h1>
+          <p className="text-sm text-secondary">
             {completedToday}/{habits.length} done today
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             onClick={getAiReport}
             disabled={reportLoading}
@@ -281,7 +278,7 @@ export default function Habits() {
           >
             {reportLoading ? (
               <>
-                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -295,33 +292,33 @@ export default function Habits() {
             onClick={() => setShowForm(true)}
             className="btn btn-primary"
           >
-            <span className="text-2xl">+</span> New Habit
+            <span className="text-xl">+</span> New Habit
           </button>
         </div>
       </div>
 
       {/* AI Report */}
       {aiReport && (
-        <div className="card bg-accent/5 border-accent/20 animate-fade-in">
-          <div className="text-sm font-semibold text-accent mb-3">
+        <div className="card bg-accent/5 border-accent/20">
+          <div className="text-sm font-semibold text-primary mb-2">
             🤖 AI WEEKLY INSIGHT
           </div>
-          <div className="text-sm leading-relaxed">{aiReport}</div>
+          <div className="text-sm">{aiReport}</div>
         </div>
       )}
 
       {/* Progress Card */}
       {habits.length > 0 && (
-        <div className="card animate-slide-up hover-lift">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-lg text-secondary font-semibold">Today's progress</span>
-            <span className="text-lg font-bold">
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-secondary">Today's progress</span>
+            <span className="text-sm font-semibold">
               {completedToday}/{habits.length}
             </span>
           </div>
-          <div className="h-4 bg-tertiary rounded-full overflow-hidden">
+          <div className="h-2 bg-tertiary rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-success to-emerald-600 rounded-full transition-all duration-500 shadow-glow"
+              className="h-full bg-success rounded-full transition-all duration-300"
               style={{
                 width: `${habits.length ? (completedToday / habits.length) * 100 : 0}%`,
               }}
@@ -333,13 +330,16 @@ export default function Habits() {
       {/* Habits List */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin w-12 h-12 border-3 border-accent border-t-transparent rounded-full" />
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+            <div className="text-secondary">Loading...</div>
+          </div>
         </div>
       ) : habits.length === 0 ? (
-        <div className="card text-center py-20 animate-fade-in">
-          <div className="text-7xl mb-6">🎯</div>
-          <h3 className="font-bold text-2xl mb-4">No habits yet</h3>
-          <p className="text-secondary text-lg mb-8">
+        <div className="card text-center py-12">
+          <div className="text-5xl mb-4">🎯</div>
+          <h3 className="font-semibold text-lg mb-3">No habits yet</h3>
+          <p className="text-secondary mb-6">
             Start building your first habit to track progress.
           </p>
           <button
@@ -350,8 +350,8 @@ export default function Habits() {
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
-          {habits.map((habit, index) => (
+        <div className="space-y-3">
+          {habits.map((habit) => (
             <HabitCard
               key={habit.id}
               habit={habit}
