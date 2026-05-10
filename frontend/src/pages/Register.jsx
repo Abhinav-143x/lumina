@@ -92,24 +92,14 @@ export default function Register() {
         {/* Register Form */}
         <div className="card">
           {error && (
-            <div style={{
-              marginBottom: '1rem',
-              padding: '0.75rem',
-              borderRadius: '0.375rem',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-              color: 'var(--error)',
-              fontSize: '0.875rem'
-            }}>
+            <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Username
-              </label>
+            <div className="form-group">
+              <label className="form-label">Username</label>
               <input
                 type="text"
                 placeholder="Choose a username"
@@ -120,10 +110,8 @@ export default function Register() {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Email
-              </label>
+            <div className="form-group">
+              <label className="form-label">Email</label>
               <input
                 type="email"
                 placeholder="your@email.com"
@@ -133,10 +121,8 @@ export default function Register() {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Password
-              </label>
+            <div className="form-group">
+              <label className="form-label">Password</label>
               <input
                 type="password"
                 placeholder="•••••••••"
@@ -147,10 +133,8 @@ export default function Register() {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Confirm Password
-              </label>
+            <div className="form-group">
+              <label className="form-label">Confirm Password</label>
               <input
                 type="password"
                 placeholder="•••••••••"
@@ -191,29 +175,23 @@ export default function Register() {
 
         {/* Features */}
         <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', textAlign: 'center' }}>
-          <div style={{
+          <div className="card" style={{
             padding: '1rem',
-            borderRadius: '0.375rem',
-            background: 'rgba(51, 65, 85, 0.3)',
-            border: '1px solid var(--border-color)'
+            background: 'var(--bg-tertiary)'
           }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📝</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Smart Notes</div>
           </div>
-          <div style={{
+          <div className="card" style={{
             padding: '1rem',
-            borderRadius: '0.375rem',
-            background: 'rgba(51, 65, 85, 0.3)',
-            border: '1px solid var(--border-color)'
+            background: 'var(--bg-tertiary)'
           }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✅</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Habit Tracking</div>
           </div>
-          <div style={{
+          <div className="card" style={{
             padding: '1rem',
-            borderRadius: '0.375rem',
-            background: 'rgba(51, 65, 85, 0.3)',
-            border: '1px solid var(--border-color)'
+            background: 'var(--bg-tertiary)'
           }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>AI Assistant</div>

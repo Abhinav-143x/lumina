@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
+import { ListSkeleton } from '../components/Skeleton'
+import EmptyState from '../components/EmptyState'
 
 const COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#14b8a6', '#ec4899', '#8b5cf6', '#f97316']
 const ICONS = ['💪', '📚', '🧘', '🏃', '💧', '🥗', '😴', '✍️', '🎯', '🎸', '🧹', '💊']
@@ -36,31 +38,15 @@ function HabitForm({ onSave, onClose }) {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0, 0, 0, 0.6)',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem'
-    }}>
-      <div style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '0.5rem',
-        width: '100%',
-        maxWidth: '28rem',
-        padding: '1.5rem'
-      }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>New Habit</h2>
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ width: '100%', maxWidth: '28rem' }}>
+        <div className="modal-header">
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>New Habit</h2>
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Name *
-            </label>
+        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="form-group">
+            <label className="form-label">Name *</label>
             <input
               type="text"
               placeholder="e.g. Morning run"
@@ -69,25 +55,14 @@ function HabitForm({ onSave, onClose }) {
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Icon
-            </label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div className="form-group">
+            <label className="form-label">Icon</label>
+            <div className="icon-picker">
               {ICONS.map((icon) => (
                 <button
                   key={icon}
                   onClick={() => handleChange('icon')(icon)}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '0.375rem',
-                    border: '2px solid',
-                    fontSize: '1.25rem',
-                    background: data.icon === icon ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                    borderColor: data.icon === icon ? 'var(--primary)' : 'var(--border-color)',
-                    cursor: 'pointer'
-                  }}
+                  className={`icon-option ${data.icon === icon ? 'icon-option-selected' : ''}`}
                 >
                   {icon}
                 </button>
@@ -95,33 +70,22 @@ function HabitForm({ onSave, onClose }) {
             </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Color
-            </label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="form-group">
+            <label className="form-label">Color</label>
+            <div className="color-picker">
               {COLORS.map((color) => (
                 <button
                   key={color}
                   onClick={() => handleChange('color')(color)}
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    border: '2px solid',
-                    background: color,
-                    borderColor: data.color === color ? 'white' : 'transparent',
-                    cursor: 'pointer'
-                  }}
+                  className={`color-option ${data.color === color ? 'color-option-selected' : ''}`}
+                  style={{ background: color }}
                 />
               ))}
             </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Category
-            </label>
+          <div className="form-group">
+            <label className="form-label">Category</label>
             <select
               value={data.category}
               onChange={(e) => handleChange('category')(e.target.value)}
@@ -134,10 +98,8 @@ function HabitForm({ onSave, onClose }) {
             </select>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Frequency
-            </label>
+          <div className="form-group">
+            <label className="form-label">Frequency</label>
             <select
               value={data.frequency}
               onChange={(e) => handleChange('frequency')(e.target.value)}
@@ -147,20 +109,20 @@ function HabitForm({ onSave, onClose }) {
               <option value="weekends">Weekends only</option>
             </select>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', paddingTop: '1rem' }}>
-            <button
-              onClick={save}
-              disabled={saving}
-              className="btn-primary"
-              style={{ flex: 1 }}
-            >
-              {saving ? 'Saving...' : 'Create Habit'}
-            </button>
-            <button onClick={onClose} className="btn-ghost">
-              Cancel
-            </button>
-          </div>
+        <div className="modal-footer">
+          <button
+            onClick={save}
+            disabled={saving}
+            className="btn-primary"
+            style={{ flex: 1 }}
+          >
+            {saving ? 'Saving...' : 'Create Habit'}
+          </button>
+          <button onClick={onClose} className="btn-ghost">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -205,14 +167,15 @@ function HabitCard({ habit, onCheckIn, onDelete }) {
             border: '2px solid',
             background: habit.completed_today ? habit.color : 'transparent',
             borderColor: habit.completed_today ? habit.color : 'var(--border-color)',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            color: habit.completed_today ? 'white' : 'inherit'
           }}
         >
           {habit.completed_today ? '✓' : habit.icon}
         </button>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>{habit.name}</h3>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{habit.name}</h3>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem', flexWrap: 'wrap' }}>
             <span style={{ textTransform: 'capitalize' }}>{habit.category}</span>
             <span>·</span>
@@ -332,11 +295,11 @@ export default function Habits() {
 
       {/* AI Report */}
       {aiReport && (
-        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+        <div className="card" style={{ background: 'var(--bg-active)', border: '1px solid var(--border-gold)' }}>
           <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--primary)', marginBottom: '0.5rem' }}>
             🤖 AI WEEKLY INSIGHT
           </div>
-          <div style={{ fontSize: '0.875rem' }}>{aiReport}</div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{aiReport}</div>
         </div>
       )}
 
@@ -365,34 +328,14 @@ export default function Habits() {
 
       {/* Habits List */}
       {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              border: '2px solid var(--primary)',
-              borderTop: 'transparent',
-              borderRadius: '50%',
-              margin: '0 auto 1rem',
-              animation: 'spin 1s linear infinite'
-            }} />
-            <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>
-          </div>
-        </div>
+        <ListSkeleton count={5} />
       ) : habits.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem 0' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.75rem' }}>No habits yet</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-            Start building your first habit to track progress.
-          </p>
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn-primary"
-          >
-            Create first habit
-          </button>
-        </div>
+        <EmptyState
+          icon="🎯"
+          title="No habits yet"
+          description="Start building your first habit to track progress"
+          action={{ label: 'Create first habit', onClick: () => setShowForm(true) }}
+        />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {habits.map((habit) => (

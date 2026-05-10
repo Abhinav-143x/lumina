@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../api/client'
+import { CardSkeleton, ListSkeleton } from '../components/Skeleton'
+import EmptyState from '../components/EmptyState'
 
 function NoteEditor({ note, onSave, onClose }) {
   const [title, setTitle] = useState(note?.title || '')
@@ -56,35 +58,10 @@ function NoteEditor({ note, onSave, onClose }) {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0, 0, 0, 0.6)',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem'
-    }}>
-      <div style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '0.5rem',
-        width: '100%',
-        maxWidth: '48rem',
-        maxHeight: '90vh',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ width: '100%', maxWidth: '48rem' }}>
         {/* Header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '1.5rem',
-          borderBottom: '1px solid var(--border-color)'
-        }}>
+        <div className="modal-header">
           <div>
             <h2>{note?.id ? 'Edit Note' : 'New Note'}</h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>Write in markdown format</p>
@@ -125,7 +102,7 @@ function NoteEditor({ note, onSave, onClose }) {
         </div>
 
         {/* Editor */}
-        <div style={{ flex: 1, overflow: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <input
             type="text"
             placeholder="Note title..."
@@ -162,14 +139,9 @@ function NoteEditor({ note, onSave, onClose }) {
           />
 
           {summary && (
-            <div style={{
-              padding: '1rem',
-              borderRadius: '0.375rem',
-              background: 'rgba(99, 102, 241, 0.1)',
-              border: '1px solid rgba(99, 102, 241, 0.2)'
-            }}>
+            <div className="card" style={{ background: 'var(--bg-active)', border: '1px solid var(--border-gold)' }}>
               <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--primary)', marginBottom: '0.5rem' }}>✨ AI SUMMARY</div>
-              <div style={{ fontSize: '0.875rem' }}>{summary}</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{summary}</div>
             </div>
           )}
 
@@ -178,14 +150,7 @@ function NoteEditor({ note, onSave, onClose }) {
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>🏷️ Suggested tags:</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {tagSuggestions.map((tag) => (
-                  <span key={tag} style={{
-                    fontSize: '0.75rem',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: 'var(--primary)',
-                    padding: '0.125rem 0.5rem',
-                    borderRadius: '0.25rem',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
-                  }}>
+                  <span key={tag} className="badge badge-gold">
                     {tag}
                   </span>
                 ))}
@@ -211,8 +176,8 @@ function NoteEditor({ note, onSave, onClose }) {
 function NoteCard({ note, onEdit, onDelete }) {
   return (
     <div
-      className="card"
-      style={{ cursor: 'pointer', position: 'relative' }}
+      className="card card-interactive"
+      style={{ position: 'relative' }}
       onClick={() => onEdit(note)}
     >
       {note.is_pinned && (
@@ -224,6 +189,7 @@ function NoteCard({ note, onEdit, onDelete }) {
         fontWeight: '600',
         marginBottom: '0.75rem',
         paddingRight: '2rem',
+        color: 'var(--text-primary)',
         display: '-webkit-box',
         WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical',
@@ -249,14 +215,7 @@ function NoteCard({ note, onEdit, onDelete }) {
       {note.tags?.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
           {note.tags.map((tag) => (
-            <span key={tag.id} style={{
-              fontSize: '0.75rem',
-              background: 'rgba(99, 102, 241, 0.1)',
-              color: 'var(--primary)',
-              padding: '0.125rem 0.5rem',
-              borderRadius: '0.25rem',
-              border: '1px solid rgba(99, 102, 241, 0.2)'
-            }}>
+            <span key={tag.id} className="badge badge-gold">
               {tag.name}
             </span>
           ))}
@@ -368,39 +327,21 @@ export default function Notes() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <button
               onClick={() => setActiveFolder('')}
-              style={{
-                width: '100%',
-                textAlign: 'left',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.375rem',
-                fontSize: '0.875rem',
-                background: activeFolder === '' ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                color: activeFolder === '' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                border: activeFolder === '' ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid transparent',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
+              className={`nav-item ${activeFolder === '' ? 'nav-item-active' : ''}`}
+              style={{ width: '100%' }}
             >
-              📁 All Notes
+              <span>📁</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>All Notes</span>
             </button>
             {folders.map((folder) => (
               <button
                 key={folder}
                 onClick={() => setActiveFolder(folder)}
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.875rem',
-                  background: activeFolder === folder ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                  color: activeFolder === folder ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  border: activeFolder === folder ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid transparent',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
+                className={`nav-item ${activeFolder === folder ? 'nav-item-active' : ''}`}
+                style={{ width: '100%' }}
               >
-                📂 {folder}
+                <span>📂</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>{folder}</span>
               </button>
             ))}
           </div>
@@ -434,34 +375,18 @@ export default function Notes() {
 
           {/* Notes Grid */}
           {loading ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '16rem' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{
-                  width: '32px',
-                  height: '32px',
-                  border: '2px solid var(--primary)',
-                  borderTop: 'transparent',
-                  borderRadius: '50%',
-                  margin: '0 auto 1rem',
-                  animation: 'spin 1s linear infinite'
-                }} />
-                <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>
-              </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+              {[...Array(6)].map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
             </div>
           ) : notes.length === 0 ? (
-            <div className="card" style={{ textAlign: 'center', padding: '3rem 0' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                {search
-                  ? 'No notes match your search.'
-                  : 'No notes yet. Create your first one!'}
-              </p>
-              {!search && (
-                <button onClick={openNew} className="btn-secondary">
-                  Create Note
-                </button>
-              )}
-            </div>
+            <EmptyState
+              icon="📭"
+              title={search ? 'No notes match your search' : 'No notes yet'}
+              description={search ? 'Try different search terms' : 'Create your first note to get started'}
+              action={!search ? { label: 'Create Note', onClick: openNew } : null}
+            />
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
               {notes.map((note) => (

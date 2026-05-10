@@ -64,24 +64,14 @@ export default function Login() {
         {/* Login Form */}
         <div className="card">
           {error && (
-            <div style={{
-              marginBottom: '1rem',
-              padding: '0.75rem',
-              borderRadius: '0.375rem',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-              color: 'var(--error)',
-              fontSize: '0.875rem'
-            }}>
+            <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Username
-              </label>
+            <div className="form-group">
+              <label className="form-label">Username</label>
               <input
                 type="text"
                 placeholder="Enter your username"
@@ -91,10 +81,8 @@ export default function Login() {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Password
-              </label>
+            <div className="form-group">
+              <label className="form-label">Password</label>
               <input
                 type="password"
                 placeholder="•••••••••"

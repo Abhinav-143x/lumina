@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
+import { PageSkeleton } from '../components/Skeleton'
+import EmptyState from '../components/EmptyState'
 
 function StatCard({ label, value, sub, icon, trend }) {
   return (
@@ -27,29 +29,19 @@ function QuickAction({ to, icon, label, description }) {
   return (
     <Link
       to={to}
+      className="card card-interactive"
       style={{
         display: 'flex',
         alignItems: 'center',
         gap: '1rem',
         padding: '1rem',
-        borderRadius: '0.375rem',
-        background: 'rgba(51, 65, 85, 0.3)',
-        border: '1px solid var(--border-color)',
         textDecoration: 'none',
-        transition: 'all 0.15s ease'
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'
-        e.currentTarget.style.background = 'rgba(51, 65, 85, 0.5)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'var(--border-color)'
-        e.currentTarget.style.background = 'rgba(51, 65, 85, 0.3)'
+        background: 'var(--bg-tertiary)'
       }}
     >
       <div style={{ fontSize: '1.5rem' }}>{icon}</div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>{label}</div>
+        <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-primary)' }}>{label}</div>
         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{description}</div>
       </div>
       <svg style={{ width: '20px', height: '20px', color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,22 +97,7 @@ export default function Dashboard() {
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
   if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            border: '2px solid var(--primary)',
-            borderTop: 'transparent',
-            borderRadius: '50%',
-            margin: '0 auto 1rem',
-            animation: 'spin 1s linear infinite'
-          }} />
-          <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>
-        </div>
-      </div>
-    )
+    return <PageSkeleton />
   }
 
   return (
@@ -195,19 +172,20 @@ export default function Dashboard() {
             <div style={{
               fontSize: '0.875rem',
               whiteSpace: 'pre-wrap',
-              background: 'rgba(51, 65, 85, 0.3)',
+              background: 'var(--bg-tertiary)',
               borderRadius: '0.375rem',
-              padding: '1rem'
+              padding: '1rem',
+              color: 'var(--text-secondary)'
             }}>
               {plan}
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🎯</div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                Get an AI-powered plan for today based on your habits and calendar
-              </p>
-            </div>
+            <EmptyState
+              icon="🎯"
+              title="No plan yet"
+              description="Get an AI-powered plan for today based on your habits and calendar"
+              action={{ label: 'Generate Plan', onClick: loadPlan }}
+            />
           )}
         </div>
 
@@ -227,13 +205,12 @@ export default function Dashboard() {
           </div>
 
           {upcoming.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📭</div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>No upcoming events</p>
-              <Link to="/calendar" style={{ display: 'inline-block', marginTop: '1rem' }} className="btn-secondary">
-                Add Event
-              </Link>
-            </div>
+            <EmptyState
+              icon="📭"
+              title="No upcoming events"
+              description="You don't have any events scheduled"
+              action={{ label: 'Add Event', onClick: () => window.location.href = '/calendar' }}
+            />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {upcoming.slice(0, 5).map((event) => (
@@ -245,7 +222,7 @@ export default function Dashboard() {
                     gap: '0.75rem',
                     padding: '0.75rem',
                     borderRadius: '0.375rem',
-                    background: 'rgba(51, 65, 85, 0.3)',
+                    background: 'var(--bg-tertiary)',
                     border: '1px solid var(--border-color)'
                   }}
                 >
@@ -261,6 +238,7 @@ export default function Dashboard() {
                     <div style={{
                       fontSize: '0.875rem',
                       fontWeight: '500',
+                      color: 'var(--text-primary)',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap'
@@ -302,38 +280,29 @@ export default function Dashboard() {
           </div>
 
           {recentNotes.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📄</div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>No notes yet</p>
-              <Link to="/notes" style={{ display: 'inline-block', marginTop: '1rem' }} className="btn-secondary">
-                Create Note
-              </Link>
-            </div>
+            <EmptyState
+              icon="📄"
+              title="No notes yet"
+              description="Start capturing your ideas and thoughts"
+              action={{ label: 'Create Note', onClick: () => window.location.href = '/notes' }}
+            />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {recentNotes.map((note) => (
                 <Link
                   key={note.id}
                   to={`/notes/${note.id}`}
+                  className="card card-interactive"
                   style={{
-                    display: 'block',
                     padding: '0.75rem',
-                    borderRadius: '0.375rem',
-                    background: 'rgba(51, 65, 85, 0.3)',
-                    border: '1px solid var(--border-color)',
                     textDecoration: 'none',
-                    transition: 'all 0.15s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-color)'
+                    background: 'var(--bg-tertiary)'
                   }}
                 >
                   <div style={{
                     fontSize: '0.875rem',
                     fontWeight: '500',
+                    color: 'var(--text-primary)',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap'
@@ -355,14 +324,7 @@ export default function Dashboard() {
                   )}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
                     {note.tags?.map((tag) => (
-                      <span key={tag.id} style={{
-                        fontSize: '0.75rem',
-                        background: 'rgba(99, 102, 241, 0.1)',
-                        color: 'var(--primary)',
-                        padding: '0.125rem 0.5rem',
-                        borderRadius: '0.25rem',
-                        border: '1px solid rgba(99, 102, 241, 0.2)'
-                      }}>
+                      <span key={tag.id} className="badge badge-gold">
                         {tag.name}
                       </span>
                     ))}

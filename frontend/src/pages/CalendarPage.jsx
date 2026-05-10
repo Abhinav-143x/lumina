@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from '../api/client'
+import { CardSkeleton } from '../components/Skeleton'
 
 const COLOR_MAP = {
   blue: '#3b82f6',
@@ -48,33 +49,17 @@ function EventForm({ date, event, onSave, onClose }) {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0, 0, 0, 0.6)',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem'
-    }}>
-      <div style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '0.5rem',
-        width: '100%',
-        maxWidth: '28rem',
-        padding: '1.5rem'
-      }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>
-          {event?.id ? 'Edit Event' : 'New Event'}
-        </h2>
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ width: '100%', maxWidth: '28rem' }}>
+        <div className="modal-header">
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>
+            {event?.id ? 'Edit Event' : 'New Event'}
+          </h2>
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Title *
-            </label>
+        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="form-group">
+            <label className="form-label">Title *</label>
             <input
               type="text"
               placeholder="Event title"
@@ -84,20 +69,16 @@ function EventForm({ date, event, onSave, onClose }) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                Start
-              </label>
+            <div className="form-group">
+              <label className="form-label">Start</label>
               <input
                 type="datetime-local"
                 value={data.start_datetime}
                 onChange={(e) => handleChange('start_datetime')(e.target.value)}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                End
-              </label>
+            <div className="form-group">
+              <label className="form-label">End</label>
               <input
                 type="datetime-local"
                 value={data.end_datetime}
@@ -106,10 +87,8 @@ function EventForm({ date, event, onSave, onClose }) {
             </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Location
-            </label>
+          <div className="form-group">
+            <label className="form-label">Location</label>
             <input
               type="text"
               placeholder="Optional"
@@ -118,33 +97,22 @@ function EventForm({ date, event, onSave, onClose }) {
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Color
-            </label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="form-group">
+            <label className="form-label">Color</label>
+            <div className="color-picker">
               {Object.entries(COLOR_MAP).map(([name, hex]) => (
                 <button
                   key={name}
                   onClick={() => handleChange('color')(name)}
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    border: '2px solid',
-                    background: hex,
-                    borderColor: data.color === name ? 'white' : 'transparent',
-                    cursor: 'pointer'
-                  }}
+                  className={`color-option ${data.color === name ? 'color-option-selected' : ''}`}
+                  style={{ background: hex }}
                 />
               ))}
             </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Description
-            </label>
+          <div className="form-group">
+            <label className="form-label">Description</label>
             <textarea
               placeholder="Optional notes"
               value={data.description}
@@ -152,20 +120,20 @@ function EventForm({ date, event, onSave, onClose }) {
               style={{ minHeight: '100px' }}
             />
           </div>
+        </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', paddingTop: '1rem' }}>
-            <button
-              onClick={save}
-              disabled={saving}
-              className="btn-primary"
-              style={{ flex: 1 }}
-            >
-              {saving ? 'Saving...' : 'Save Event'}
-            </button>
-            <button onClick={onClose} className="btn-ghost">
-              Cancel
-            </button>
-          </div>
+        <div className="modal-footer">
+          <button
+            onClick={save}
+            disabled={saving}
+            className="btn-primary"
+            style={{ flex: 1 }}
+          >
+            {saving ? 'Saving...' : 'Save Event'}
+          </button>
+          <button onClick={onClose} className="btn-ghost">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -182,8 +150,10 @@ export default function CalendarPage() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [selectedDate, setSelectedDate] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const load = async () => {
+    setLoading(true)
     const start = new Date(current.year, current.month, 1).toISOString()
     const end = new Date(current.year, current.month + 1, 0, 23, 59).toISOString()
     try {
@@ -191,7 +161,11 @@ export default function CalendarPage() {
         `/calendar/events/?start=${start}&end=${end}`
       )
       setEvents(data.results || data)
-    } catch {}
+    } catch {
+      setEvents([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -269,7 +243,14 @@ export default function CalendarPage() {
       </div>
 
       {/* Calendar */}
-      <div className="card" style={{ overflow: 'hidden' }}>
+      {loading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+          {[...Array(6)].map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <div className="card" style={{ overflow: 'hidden' }}>
         {/* Day headers */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--border-color)' }}>
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
@@ -299,7 +280,7 @@ export default function CalendarPage() {
                 minHeight: '100px',
                 borderRight: '1px solid var(--border-color)',
                 borderBottom: '1px solid var(--border-color)',
-                background: 'rgba(51, 65, 85, 0.3)',
+                background: 'var(--bg-tertiary)',
                 opacity: 0.4
               }}
             />
@@ -318,12 +299,12 @@ export default function CalendarPage() {
                   borderRight: '1px solid var(--border-color)',
                   borderBottom: '1px solid var(--border-color)',
                   cursor: 'pointer',
-                  background: today ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                  background: today ? 'var(--bg-active)' : 'transparent',
                   transition: 'background 0.15s ease'
                 }}
                 onClick={() => dayClick(day)}
                 onMouseEnter={(e) => {
-                  if (!today) e.currentTarget.style.background = 'rgba(51, 65, 85, 0.3)'
+                  if (!today) e.currentTarget.style.background = 'var(--bg-hover)'
                 }}
                 onMouseLeave={(e) => {
                   if (!today) e.currentTarget.style.background = 'transparent'
@@ -355,10 +336,10 @@ export default function CalendarPage() {
                         setEditing(e)
                         setShowForm(true)
                       }}
+                      className="badge"
                       style={{
                         fontSize: '0.75rem',
                         padding: '0.25rem 0.5rem',
-                        borderRadius: '0.25rem',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
@@ -382,6 +363,8 @@ export default function CalendarPage() {
           })}
         </div>
       </div>
+      )}
+
 
       {showForm && (
         <EventForm

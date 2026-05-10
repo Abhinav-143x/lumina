@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, Outlet } from 'react-router-dom'
+import MobileNav from './MobileNav'
 
 function Layout() {
   const location = useLocation()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -35,38 +36,39 @@ function Layout() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--bg-primary)' }}>
+    <div className="layout">
+      {/* Skip Link for Accessibility */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
+      {/* Mobile Menu Overlay */}
+      {sidebarOpen && (
+        <div
+          className="mobile-hidden"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9,
+            display: window.innerWidth <= 768 ? 'block' : 'none'
+          }}
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
+        className={`sidebar ${sidebarOpen ? '' : 'sidebar-collapsed'} ${window.innerWidth <= 768 && sidebarOpen ? 'sidebar-open' : ''}`}
         style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          height: '100%',
-          background: 'var(--bg-secondary)',
-          borderRight: '1px solid var(--border-color)',
-          width: sidebarOpen ? '224px' : '64px',
-          transition: 'width 0.2s ease',
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column'
+          transform: window.innerWidth <= 768 ? (sidebarOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
+          width: window.innerWidth <= 768 ? '280px' : (sidebarOpen ? '224px' : '64px')
         }}
       >
         {/* Logo */}
         <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '0.5rem',
-              background: 'var(--primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
-              color: 'white'
-            }}>
+            <div className="avatar">
               L
             </div>
             {sidebarOpen && (
@@ -84,17 +86,9 @@ function Layout() {
             <Link
               key={item.path}
               to={item.path}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.75rem 1rem',
-                borderRadius: '0.375rem',
-                textDecoration: 'none',
-                color: isActive(item.path) ? 'var(--text-primary)' : 'var(--text-secondary)',
-                background: isActive(item.path) ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                border: isActive(item.path) ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid transparent',
-                transition: 'all 0.15s ease'
+              className={`nav-item ${isActive(item.path) ? 'nav-item-active' : ''}`}
+              onClick={() => {
+                if (window.innerWidth <= 768) setSidebarOpen(false)
               }}
             >
               <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
@@ -114,20 +108,9 @@ function Layout() {
               gap: '0.75rem',
               padding: '0.75rem',
               borderRadius: '0.375rem',
-              background: 'rgba(51, 65, 85, 0.3)'
+              background: 'var(--bg-tertiary)'
             }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: 'var(--primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                color: 'white',
-                fontSize: '0.875rem'
-              }}>
+              <div className="avatar">
                 {user?.username?.[0]?.toUpperCase() || 'U'}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -153,15 +136,10 @@ function Layout() {
               </div>
               <button
                 onClick={handleLogout}
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '0.375rem',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: 'var(--text-muted)'
-                }}
+                className="btn-ghost"
+                style={{ padding: '0.5rem' }}
                 title="Logout"
+                aria-label="Logout"
               >
                 <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -171,19 +149,10 @@ function Layout() {
           ) : (
             <button
               onClick={handleLogout}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                borderRadius: '0.375rem',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-muted)'
-              }}
+              className="btn-ghost"
+              style={{ width: '100%', padding: '0.75rem' }}
               title="Logout"
+              aria-label="Logout"
             >
               <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -195,9 +164,10 @@ function Layout() {
 
       {/* Main Content */}
       <main
+        id="main-content"
         style={{
           flex: 1,
-          marginLeft: sidebarOpen ? '224px' : '64px',
+          marginLeft: window.innerWidth <= 768 ? '0' : (sidebarOpen ? '224px' : '64px'),
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -205,14 +175,7 @@ function Layout() {
         }}
       >
         {/* Top Bar */}
-        <header style={{
-          position: 'sticky',
-          top: 0,
-          background: 'rgba(30, 41, 59, 0.8)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid var(--border-color)',
-          zIndex: 5
-        }}>
+        <header className="header">
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -221,14 +184,9 @@ function Layout() {
           }}>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{
-                padding: '0.5rem',
-                borderRadius: '0.375rem',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--text-muted)'
-              }}
+              className="btn-ghost"
+              style={{ padding: '0.5rem' }}
+              aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
             >
               <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {sidebarOpen ? (
@@ -257,6 +215,9 @@ function Layout() {
           <Outlet />
         </div>
       </main>
+
+      {/* Mobile Navigation */}
+      <MobileNav />
     </div>
   )
 }
